@@ -1,0 +1,21 @@
+{
+  "globalBasePath": "Gallery/Splats/global/gallery_base_low.ply",
+  "zones": [
+    {
+      "enabled": false,
+      "id": "artwork_001_example",
+      "center": {
+        "x": 0.0,
+        "y": 1.5,
+        "z": 0.0
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_001/high.ply",
+      "note": "Disabled example. Crop a real artwork ROI from the full reference PLY and preserve scene coordinates."
+    }
+  ]
+}
