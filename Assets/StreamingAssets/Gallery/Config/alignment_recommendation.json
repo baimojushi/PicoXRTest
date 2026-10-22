@@ -1,0 +1,71 @@
+{
+  "source_assessment": {
+    "visual": "scene_Final_v3.ply",
+    "collision": "mesh_simplified_10pct.obj",
+    "raw_visual_bbox_m": {
+      "min": [
+        -8.731835,
+        -1.968935,
+        -17.932442
+      ],
+      "max": [
+        7.1040254,
+        2.504661,
+        7.0438356
+      ],
+      "span": [
+        15.835861,
+        4.473596,
+        24.976276
+      ]
+    },
+    "raw_collision_bbox_m": {
+      "min": [
+        -8.0841,
+        -1.53,
+        -17.5507
+      ],
+      "max": [
+        3.81,
+        2.66931,
+        2.13
+      ],
+      "span": [
+        11.8941,
+        4.19931,
+        19.6807
+      ]
+    },
+    "note": "Raw assets are already in the same approximate metric frame. The large bbox difference is coverage, not a gross frame mismatch."
+  },
+  "icp_visual_to_collision": {
+    "raw_translation_m": [
+      0.01376872,
+      -0.00836737,
+      -0.00299699
+    ],
+    "raw_euler_xyz_deg": [
+      0.14993673,
+      -0.1095414,
+      0.06496121
+    ],
+    "unity_ruf_translation_m": [
+      0.01376872,
+      -0.00836737,
+      0.00299699
+    ],
+    "unity_ruf_euler_xyz_deg": [
+      -0.1499366,
+      0.10954143,
+      0.06496119
+    ],
+    "sample_nearest_neighbor_median_m": 0.06725544,
+    "sample_nearest_neighbor_p95_m": 0.31368309,
+    "within_0_10m_ratio": 0.68763,
+    "within_0_20m_ratio": 0.88989
+  },
+  "recommendation": {
+    "apply_micro_correction_by_default": false,
+    "reason": "The transform is tiny and ICP compares splat centers to mesh vertices, not exact surface correspondences. Start with identity after applying the same RUB->RUF coordinate bridge to both assets. Apply the micro correction only after visual wall/floor contact checks."
+  }
+}
