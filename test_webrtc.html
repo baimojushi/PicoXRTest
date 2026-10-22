@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MoLink WebRTC 联调</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#05080b;color:#e8eef4;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:hidden}
+  #v{position:fixed;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+  #hud{position:fixed;top:0;left:0;right:0;padding:10px 12px;background:linear-gradient(#000c,#0000);pointer-events:none}
+  #hud b{color:#00d4aa}
+  .row{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:3px}
+  .k{color:#6b7c8a}
+  #log{position:fixed;left:0;right:0;bottom:0;max-height:34vh;overflow:auto;padding:8px 12px;background:#000b;font-size:11px;line-height:1.45}
+  #log div{white-space:pre-wrap;word-break:break-all}
+  .err{color:#ff6b6b}.ok{color:#7ee787}.warn{color:#e3b341}
+  #keys{position:fixed;right:12px;bottom:calc(34vh + 12px);color:#6b7c8a;text-align:right;font-size:11px;pointer-events:none}
+</style>
+</head>
+<body>
+<video id="v" autoplay muted playsinline></video>
+
+<div id="hud">
+  <div class="row">
+    <span><span class="k">信令</span> <b id="ws">-</b></span>
+    <span><span class="k">ICE</span> <b id="ice">-</b></span>
+    <span><span class="k">DC</span> <b id="dc">-</b></span>
+    <span><span class="k">分辨率</span> <b id="res">-</b></span>
+    <span><span class="k">FPS</span> <b id="fps">-</b></span>
+    <span><span class="k">已解码帧</span> <b id="frames">-</b></span>
+    <span><span class="k">码率</span> <b id="kbps">-</b></span>
+  </div>
+  <div class="row">
+    <span><span class="k">位置</span> <b id="pos">-</b></span>
+    <span><span class="k">朝向</span> <b id="rot">-</b></span>
+    <span><span class="k">渲染帧</span> <b id="uframes">-</b></span>
+  </div>
+  <div class="row">
+    <span><span class="k">延迟</span> <b id="lat">-</b></span>
+  </div>
+</div>
+<div id="keys">WASD 移动 · 鼠标拖动/方向键转视角 · 空格 USE</div>
+<div id="log"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const logEl = $('log');
+function log(msg, cls='') {
+  const line = document.createElement('div');
+  line.className = cls;
+  line.textContent = new Date().toLocaleTimeString('zh-CN', {hour12:false}) + '  ' + msg;
+  logEl.prepend(line);
+  while (logEl.childElementCount > 200) logEl.lastChild.remove();
+  console.log('[MolinkTest]', msg);
+}
+
+const SIGNAL = 'ws://' + location.hostname + ':8766';
+let ws, pc, dc;
+let lastStats = {framesDecoded:0, bytesReceived:0, ts:0};
+let lastUiFrames = 0;
+let statsTimer = null;
+let offerTimer = null;
+let answered = false;
+
+function sendSignal(obj) {
+  if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(obj));
+}
+
+function setText(id, v) { const e = $(id); if (e && e.textContent !== v) e.textContent = v; }
+
+function connectSignal() {
+  log('连接信令 ' + SIGNAL);
+  ws = new WebSocket(SIGNAL);
+  ws.onopen = () => {
+    setText('ws', '已连接');
+    log('信令已连接', 'ok');
+    sendSignal({type:'hello', role:'browser'});
+    startOffer();
+  };
+  ws.onmessage = onSignal;
+  ws.onclose = () => {
+    setText('ws', '断开');
+    log('信令断开，2s 重连', 'warn');
+    setTimeout(connectSignal, 2000);
+  };
+  ws.onerror = () => log('信令错误', 'err');
+}
+
+function onSignal(ev) {
+  let msg;
+  try { msg = JSON.parse(ev.data); } catch { return; }
+  if (msg.type === 'answer') {
+    answered = true;
+    clearTimeout(offerTimer);
+    log('收到 answer (' + msg.sdp.length + 'B)', 'ok');
+    pc.setRemoteDescription({type:'answer', sdp:msg.sdp})
+      .then(() => log('setRemoteDescription 完成', 'ok'))
+      .catch(e => log('setRemoteDescription 失败: ' + e.message, 'err'));
+  } else if (msg.type === 'candidate') {
+    pc.addIceCandidate({candidate:msg.candidate, sdpMid:msg.sdpMid, sdpMLineIndex:msg.sdpMLineIndex})
+      .catch(e => log('addIceCandidate 失败: ' + e.message, 'err'));
+  } else if (msg.type === 'peer') {
+    log('对端加入: ' + msg.role);
+  }
+}
+
+function createPeer() {
+  const cfg = {iceServers:[]};   // 纯局域网，无需 STUN
+  pc = new RTCPeerConnection(cfg);
+  answered = false;
+
+  pc.onicecandidate = e => {
+    if (e.candidate) sendSignal({type:'candidate', candidate:e.candidate.candidate,
+      sdpMid:e.candidate.sdpMid, sdpMLineIndex:e.candidate.sdpMLineIndex});
+  };
+  pc.oniceconnectionstatechange = () => {
+    setText('ice', pc.iceConnectionState);
+    log('ICE: ' + pc.iceConnectionState, pc.iceConnectionState === 'failed' ? 'err' : '');
+  };
+  pc.onconnectionstatechange = () => log('连接状态: ' + pc.connectionState);
+  pc.ontrack = e => {
+    log('收到轨道 ' + e.track.kind, 'ok');
+    $('v').srcObject = e.streams[0] || new MediaStream([e.track]);
+    $('v').play().catch(err => log('play() 失败: ' + err.message, 'err'));
+  };
+  pc.onicegatheringstatechange = () => log('ICE 收集: ' + pc.iceGatheringState);
+
+  dc = pc.createDataChannel('control', {ordered:true});
+  dc.onopen = () => { setText('dc', 'open'); log('DataChannel 已打开', 'ok'); startControlLoop(); };
+  dc.onclose = () => { setText('dc', 'closed'); log('DataChannel 关闭', 'warn'); };
+  dc.onmessage = e => {
+    let msg; try { msg = JSON.parse(e.data); } catch { return; }
+    if (msg.type === 'state') {
+      setText('pos', msg.pos.join(', '));
+      setText('rot', msg.rot ? msg.rot.join(', ') : '-');
+      setText('uframes', String(msg.frames));
+      if (msg.latencyMs != null) setText('lat', String(msg.latencyMs));
+    }
+  };
+}
+
+async function startOffer() {
+  try {
+    if (pc) { pc.close(); pc = null; }
+    createPeer();
+    const offer = await pc.createOffer({offerToReceiveVideo:true, offerToReceiveAudio:false});
+    await pc.setLocalDescription(offer);
+    log('发出 offer (' + offer.sdp.length + 'B)');
+    sendSignal({type:'offer', sdp:offer.sdp});
+    clearTimeout(offerTimer);
+    offerTimer = setTimeout(() => {
+      if (!answered) { log('5s 无 answer，重发 offer', 'warn'); startOffer(); }
+    }, 5000);
+  } catch (e) {
+    log('创建 offer 失败: ' + e.message, 'err');
+  }
+}
+
+// ---- 控制 ----
+const ctl = {lx:0, ly:0, rx:0, ry:0, use:false, reset:false};
+const keys = new Set();
+const sent = {lx:9, ly:9, rx:9, ry:9, use:null, reset:null};
+function startControlLoop() {
+  setInterval(() => {
+    if (!dc || dc.readyState !== 'open') return;
+    const same = Math.abs(ctl.lx-sent.lx)<0.02 && Math.abs(ctl.ly-sent.ly)<0.02 &&
+                 Math.abs(ctl.rx-sent.rx)<0.02 && Math.abs(ctl.ry-sent.ry)<0.02 && 
+                 ctl.use===sent.use && ctl.reset===sent.reset;
+    if (same) return;
+    Object.assign(sent, ctl);
+    dc.send(JSON.stringify({type:'control', lx:ctl.lx, ly:ctl.ly, rx:ctl.rx, ry:ctl.ry, use:ctl.use, reset:ctl.reset}));
+  }, 33);
+}
+addEventListener('keydown', e => {
+  keys.add(e.code);
+  if (e.code === 'Space') { ctl.use = true; e.preventDefault(); }
+  refreshKeys();
+});
+addEventListener('keyup', e => {
+  keys.delete(e.code);
+  if (e.code === 'Space') ctl.use = false;
+  refreshKeys();
+});
+function refreshKeys() {
+  ctl.ly = (keys.has('KeyW')?1:0) - (keys.has('KeyS')?1:0);
+  ctl.lx = (keys.has('KeyD')?1:0) - (keys.has('KeyA')?1:0);
+  ctl.rx = (keys.has('ArrowRight')?1:0) - (keys.has('ArrowLeft')?1:0);
+  ctl.ry = (keys.has('ArrowUp')?1:0) - (keys.has('ArrowDown')?1:0);
+}
+
+// ---- 统计 ----
+setInterval(async () => {
+  if (!pc) return;
+  let report;
+  try { report = await pc.getStats(); } catch { return; }
+  let inbound, outbound;
+  report.forEach(r => {
+    if (r.type === 'inbound-rtp' && r.kind === 'video') inbound = r;
+    if (r.type === 'candidate-pair' && r.state === 'succeeded') outbound = r;
+  });
+  if (!inbound) return;
+
+  const now = performance.now();
+  const dt = lastStats.ts ? (now - lastStats.ts) / 1000 : 1;
+  const dFrames = inbound.framesDecoded - lastStats.framesDecoded;
+  const dBytes = inbound.bytesReceived - lastStats.bytesReceived;
+  lastStats = {framesDecoded: inbound.framesDecoded, bytesReceived: inbound.bytesReceived, ts: now};
+
+  setText('res', inbound.frameWidth + 'x' + inbound.frameHeight);
+  setText('fps', (dFrames / dt).toFixed(1));
+  setText('frames', String(inbound.framesDecoded));
+  setText('kbps', (dBytes * 8 / dt / 1000).toFixed(0));
+  setText('dc', dc ? dc.readyState : '-');
+
+  const payload = {
+    type:'stats',
+    ice: pc.iceConnectionState,
+    dc: dc ? dc.readyState : null,
+    width: inbound.frameWidth,
+    height: inbound.frameHeight,
+    fps: +(dFrames / dt).toFixed(1),
+    framesDecoded: inbound.framesDecoded,
+    bytesReceived: inbound.bytesReceived,
+    kbps: +(dBytes * 8 / dt / 1000).toFixed(0),
+    codec: inbound.codecId || null,
+    rtt: outbound && outbound.currentRoundTripTime != null ? +(outbound.currentRoundTripTime*1000).toFixed(1) : null
+  };
+  fetch('/stats', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)}).catch(()=>{});
+}, 2000);
+
+// ---- ping / 延迟 ----
+let pingTimer = null;
+function startPingLoop() {
+  if (pingTimer) clearInterval(pingTimer);
+  pingTimer = setInterval(() => {
+    if (dc && dc.readyState === 'open') {
+      dc.send(JSON.stringify({type:'ping', t0:Date.now()}));
+    }
+  }, 1000);
+}
+// 在 startControlLoop 里已经会在 dc.onopen 时启动控制循环，这里也挂一个
+const _origStartControl = startControlLoop;
+startControlLoop = () => { _origStartControl(); startPingLoop(); };
+
+log('页面加载完成，准备连接');
+connectSignal();
+</script>
+</body>
+</html>

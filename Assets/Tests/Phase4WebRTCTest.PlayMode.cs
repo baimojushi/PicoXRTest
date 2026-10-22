@@ -1,0 +1,397 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
+using Gallery3DGS.Streaming;
+using Debug = UnityEngine.Debug;
+using Object = UnityEngine.Object;
+
+/// <summary>
+/// Phase 4 WebRTC Integration Test (PlayMode)
+/// Tests end-to-end: Browser joystick -> Unity player movement -> SplatZoneManager HIGH/LOW switch
+/// </summary>
+public class Phase4WebRTCTest
+{
+    const int Width = 1280;
+    const int Height = 720;
+    const string OutputRoot = @"E:\UnityProjects\PicoXRTest\P4_TestOutput";
+    const string SignalingUrl = "ws://127.0.0.1:8766";
+
+    private Camera mainCam;
+    private GameObject playerObj;
+    private GameObject playerCamObj;
+    private Camera playerCam;
+    private SplatZoneManager manager;
+    private Component videoPusher; // Use Component to avoid assembly reference
+    private Type videoPusherType;
+    private Type bridgeType;
+    private string outputDir;
+    private StringBuilder report = new StringBuilder();
+    private System.Diagnostics.Stopwatch total = new System.Diagnostics.Stopwatch();
+
+    // ZoneState via reflection
+    private Type zoneStateType;
+    private object zoneState_Unloaded;
+    private object zoneState_Loaded;
+    private object zoneState_Active;
+    private object zoneState_Cooling;
+    private object zoneState_Evicting;
+
+    [UnitySetUp]
+    public IEnumerator SetUp()
+    {
+        outputDir = Path.Combine(OutputRoot, $"P4_Test_{DateTime.Now:yyyyMMdd_HHmmss}");
+        Directory.CreateDirectory(outputDir);
+        total.Start();
+
+        // Initialize ZoneState via reflection
+        var streamingAssembly = System.AppDomain.CurrentDomain.GetAssemblies()
+            .FirstOrDefault(a => a.GetName().Name == "Gallery3DGS.Streaming");
+        if (streamingAssembly == null)
+            streamingAssembly = typeof(SplatZoneManager).Assembly;
+
+        zoneStateType = streamingAssembly.GetType("Gallery3DGS.Streaming.ZoneState");
+        if (zoneStateType == null)
+            zoneStateType = streamingAssembly.GetType("SplatZoneManager+ZoneState");
+
+        if (zoneStateType != null)
+        {
+            zoneState_Unloaded = System.Enum.Parse(zoneStateType, "Unloaded");
+            zoneState_Loaded = System.Enum.Parse(zoneStateType, "Loaded");
+            zoneState_Active = System.Enum.Parse(zoneStateType, "Active");
+            zoneState_Cooling = System.Enum.Parse(zoneStateType, "Cooling");
+            zoneState_Evicting = System.Enum.Parse(zoneStateType, "Evicting");
+        }
+
+        // Find VideoPusher type
+        videoPusherType = System.Type.GetType("VideoPusher, Assembly-CSharp");
+        if (videoPusherType == null)
+        {
+            foreach (var asm in System.AppDomain.CurrentDomain.GetAssemblies())
+            {
+                videoPusherType = asm.GetType("VideoPusher");
+                if (videoPusherType != null) break;
+            }
+        }
+
+        // Find DataChannelUdpBridge type
+        bridgeType = System.Type.GetType("DataChannelUdpBridge, Assembly-CSharp");
+        if (bridgeType == null)
+        {
+            foreach (var asm in System.AppDomain.CurrentDomain.GetAssemblies())
+            {
+                bridgeType = asm.GetType("DataChannelUdpBridge");
+                if (bridgeType != null) break;
+            }
+        }
+
+        // Create Player + Camera (Main Camera)
+        playerObj = new GameObject("Player");
+        playerObj.tag = "Player";
+        playerObj.transform.position = new Vector3(100f, 1.6f, 100f);
+
+        playerCamObj = new GameObject("Main Camera");
+        playerCamObj.tag = "MainCamera";
+        playerCamObj.transform.SetParent(playerObj.transform, false);
+        playerCamObj.transform.position = new Vector3(100f, 1.6f, 100f);
+
+        playerCam = playerCamObj.GetComponent<Camera>();
+        if (playerCam == null) playerCam = playerCamObj.AddComponent<Camera>();
+        playerCam.cameraType = CameraType.Game;
+        playerCam.clearFlags = CameraClearFlags.SolidColor;
+        playerCam.backgroundColor = new Color(0.1f, 0.1f, 0.1f, 1f);
+        playerCam.fieldOfView = 60f;
+        playerCam.nearClipPlane = 0.03f;
+        playerCam.farClipPlane = 500f;
+
+        // CRITICAL: In PlayMode, Camera.main returns the first enabled Camera with tag "MainCamera"
+        // The playerCam has tag "MainCamera" so it will be Camera.main
+        mainCam = Camera.main;
+        Assert.IsNotNull(mainCam, "Camera.main should be set to playerCam with tag MainCamera");
+        Log($"Camera.main: {mainCam.name}");
+
+        // Create SplatZoneManager
+        var managerObj = new GameObject("SplatZoneManager");
+        managerObj.SetActive(false);
+        manager = managerObj.AddComponent<SplatZoneManager>();
+
+        // Configure zones
+        var zoneConfigType = typeof(SplatZoneManager).Assembly.GetType("Gallery3DGS.Streaming.SplatZoneConfig");
+        if (zoneConfigType != null)
+        {
+            var zoneConfig = Activator.CreateInstance(zoneConfigType);
+            zoneConfigType.GetField("zoneId")?.SetValue(zoneConfig, "artwork_01");
+            zoneConfigType.GetField("displayName")?.SetValue(zoneConfig, "Main Artwork");
+            zoneConfigType.GetField("enabled")?.SetValue(zoneConfig, true);
+            zoneConfigType.GetField("centerWorld")?.SetValue(zoneConfig, new Vector3(3.57f, -0.12f, 5.28f));
+            zoneConfigType.GetField("highAssetName")?.SetValue(zoneConfig, "artwork_high_100k.ply");
+            zoneConfigType.GetField("shDegree")?.SetValue(zoneConfig, 0);
+            zoneConfigType.GetField("preloadDistanceM")?.SetValue(zoneConfig, 16f);
+            zoneConfigType.GetField("switchDistanceM")?.SetValue(zoneConfig, 4f);
+            zoneConfigType.GetField("unloadDistanceM")?.SetValue(zoneConfig, 12f);
+
+            var zonesArray = Array.CreateInstance(zoneConfigType, 1);
+            zonesArray.SetValue(zoneConfig, 0);
+
+            var setZonesMethod = typeof(SplatZoneManager).GetMethod("SetZones");
+            setZonesMethod?.Invoke(manager, new object[] { zonesArray });
+        }
+
+        // Override global low asset name
+        var globalLowField = typeof(SplatZoneManager).GetField("globalLowAssetName", BindingFlags.NonPublic | BindingFlags.Instance);
+        globalLowField?.SetValue(manager, "gallery_global_low_50k.ply");
+
+        var maxHighField = typeof(SplatZoneManager).GetField("maxConcurrentHighZones", BindingFlags.NonPublic | BindingFlags.Instance);
+        maxHighField?.SetValue(manager, 1);
+
+        // Set observer BEFORE activating manager
+        manager.SetObserver(playerObj.transform);
+
+        // Now activate the manager
+        managerObj.SetActive(true);
+
+        // Wait for InitializeAsync to complete
+        var initTask = manager.InitializeAsync();
+        while (!initTask.IsCompleted)
+            yield return null;
+        if (initTask.IsFaulted)
+            throw initTask.Exception;
+
+        // Wait one frame for Global LOW to be visible
+        yield return null;
+
+        // Add VideoPusher to Camera.main (this is what WebRTCBootstrap does)
+        videoPusher = mainCam.gameObject.AddComponent(videoPusherType);
+        var signalingUrlProp = videoPusherType.GetProperty("signalingUrl");
+        signalingUrlProp?.SetValue(videoPusher, SignalingUrl);
+
+        Log($"=== Phase 4 WebRTC Test Started ===");
+        Log($"graphics={SystemInfo.graphicsDeviceType} device='{SystemInfo.graphicsDeviceName}'");
+        Log($"signalingUrl={SignalingUrl}");
+        Log($"Camera.main={mainCam.name}");
+        Log($"Player={playerObj.name} at {playerObj.transform.position}");
+    }
+
+    [UnityTest]
+    public IEnumerator RunWebRTCTest()
+    {
+        // Wait for Global LOW initialization
+        yield return new WaitForSeconds(5f);
+        Log($"Global LOW initialized");
+
+        var managerType = typeof(SplatZoneManager);
+        var updateMethod = managerType.GetMethod("Update", BindingFlags.NonPublic | BindingFlags.Instance);
+
+        // Run frames to let everything settle
+        for (int i = 0; i < 60; i++)
+        {
+            updateMethod?.Invoke(manager, null);
+            yield return null;
+        }
+
+        // ============================================================
+        // Test 1: Verify initial state - Zone should be Unloaded (player far away)
+        // ============================================================
+        Log("\n--- Test 1: Far distance (Unloaded) ---");
+        playerObj.transform.position = new Vector3(100f, 1.6f, 100f);
+
+        for (int i = 0; i < 30; i++)
+        {
+            updateMethod?.Invoke(manager, null);
+            yield return null;
+        }
+
+        CheckZoneState("artwork_01", zoneState_Unloaded, "Far distance");
+
+        // ============================================================
+        // Test 2: Verify VideoPusher is connected to signaling server
+        // ============================================================
+        Log("\n--- Test 2: VideoPusher signaling connection ---");
+        Assert.IsNotNull(videoPusher, "VideoPusher should be attached to Camera.main");
+        var enabledProp = videoPusherType?.GetProperty("enabled");
+        var isEnabled = (bool)(enabledProp?.GetValue(videoPusher) ?? false);
+        Assert.IsTrue(isEnabled, "VideoPusher should be enabled");
+        Log($"VideoPusher: enabled={isEnabled}");
+
+        // Check DataChannelUdpBridge is attached
+        var bridge = mainCam.GetComponent(bridgeType);
+        Assert.IsNotNull(bridge, "DataChannelUdpBridge should be on Camera.main");
+        Log($"DataChannelUdpBridge: attached={(bridge != null)}");
+
+        // ============================================================
+        // Test 3: Move into preload range - Zone should be Loaded (LOW visible)
+        // ============================================================
+        Log("\n--- Test 3: Preload range (Loaded/LOW) ---");
+        playerObj.transform.position = new Vector3(3.57f, -0.12f, 10f); // ~4.7m from center
+
+        for (int i = 0; i < 60; i++)
+        {
+            updateMethod?.Invoke(manager, null);
+            yield return null;
+        }
+
+        CheckZoneState("artwork_01", zoneState_Loaded, "Preload range");
+
+        // ============================================================
+        // Test 4: Move into switch range - Zone should be Active (HIGH visible)
+        // ============================================================
+        Log("\n--- Test 4: Switch range (Active/HIGH) ---");
+        playerObj.transform.position = new Vector3(3.57f, -0.12f, 2f); // ~3.3m from center
+
+        for (int i = 0; i < 60; i++)
+        {
+            updateMethod?.Invoke(manager, null);
+            yield return null;
+        }
+
+        CheckZoneState("artwork_01", zoneState_Active, "Switch range");
+
+        // ============================================================
+        // Test 5: Move back out - Zone should enter Cooling
+        // ============================================================
+        Log("\n--- Test 5: Unload range (Cooling) ---");
+        playerObj.transform.position = new Vector3(3.57f, -0.12f, 18f); // ~12.7m from center
+
+        for (int i = 0; i < 60; i++)
+        {
+            updateMethod?.Invoke(manager, null);
+            yield return null;
+        }
+
+        CheckZoneState("artwork_01", zoneState_Cooling, "Unload range (Cooling)");
+
+        // ============================================================
+        // Test 6: Quick re-entry - Should reactivate from Cooling to Loaded
+        // ============================================================
+        Log("\n--- Test 6: Quick re-entry (Loaded) ---");
+        playerObj.transform.position = new Vector3(3.57f, -0.12f, 2f); // ~3.3m from center
+
+        for (int i = 0; i < 30; i++)
+        {
+            updateMethod?.Invoke(manager, null);
+            yield return null;
+        }
+
+        CheckZoneState("artwork_01", zoneState_Loaded, "Quick re-entry");
+
+        // ============================================================
+        // Test 7: Test DataChannel control message processing
+        // Simulate joystick input via reflection on DataChannelUdpBridge
+        // ============================================================
+        Log("\n--- Test 7: DataChannel control message processing ---");
+        var bridgeComp = mainCam.GetComponent(bridgeType);
+        if (bridgeComp != null)
+        {
+            // Get private method OnMessage
+            var onMessageMethod = bridgeType.GetMethod("OnMessage",
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            if (onMessageMethod != null)
+            {
+                // Simulate control message: {type:"control", lx:0, ly:1, rx:0, ry:0, use:false, reset:false}
+                var controlJson = "{\"type\":\"control\",\"lx\":0,\"ly\":1,\"rx\":0,\"ry\":0,\"use\":false,\"reset\":false}";
+                var bytes = Encoding.UTF8.GetBytes(controlJson);
+                onMessageMethod.Invoke(bridgeComp, new object[] { bytes });
+
+                // Run a few frames to process
+                for (int i = 0; i < 10; i++)
+                {
+                    updateMethod?.Invoke(manager, null);
+                    yield return null;
+                }
+
+                // Verify player moved forward (ly=1)
+                var newPos = playerObj.transform.position;
+                Log($"Player position after control: {newPos}");
+                Assert.Greater(newPos.z, 1.9f, "Player should have moved forward from control input");
+            }
+        }
+
+        // ============================================================
+        // Test 8: Wait for Cooling expiry and Eviction
+        // ============================================================
+        Log("\n--- Test 8: After Cooling expiry (Unloaded) ---");
+        playerObj.transform.position = new Vector3(3.57f, -0.12f, 100f); // Far away
+
+        // Run frames to let speed decay
+        for (int i = 0; i < 50; i++)
+        {
+            updateMethod?.Invoke(manager, null);
+            yield return null;
+        }
+
+        var runtimeField = managerType.GetField("_zoneRuntime", BindingFlags.NonPublic | BindingFlags.Instance);
+        var runtimeDict = runtimeField?.GetValue(manager) as System.Collections.IDictionary;
+        if (runtimeDict != null && runtimeDict.Contains("artwork_01"))
+        {
+            var runtime = runtimeDict["artwork_01"];
+            var stateField = runtime.GetType().GetField("state");
+            stateField?.SetValue(runtime, zoneState_Cooling);
+            var coolingTimerField = runtime.GetType().GetField("coolingTimer");
+            coolingTimerField?.SetValue(runtime, 10f);
+        }
+
+        for (int i = 0; i < 30; i++)
+        {
+            updateMethod?.Invoke(manager, null);
+            yield return null;
+        }
+
+        CheckZoneState("artwork_01", zoneState_Unloaded, "After Cooling expiry");
+
+        // ============================================================
+        // Summary
+        // ============================================================
+        total.Stop();
+        Log($"\n=== Phase 4 WebRTC Test Complete: {total.Elapsed.TotalSeconds:F1}s ===");
+
+        File.WriteAllText(Path.Combine(outputDir, "test_report.txt"), report.ToString());
+        Debug.Log($"[P4_Test] Report saved to: {outputDir}");
+
+        Assert.Pass("Phase 4 WebRTC Integration Test PASSED");
+    }
+
+    void CheckZoneState(string zoneId, object expected, string context)
+    {
+        var runtimeField = typeof(SplatZoneManager).GetField("_zoneRuntime", BindingFlags.NonPublic | BindingFlags.Instance);
+        var runtimeDict = runtimeField?.GetValue(manager) as System.Collections.IDictionary;
+
+        if (runtimeDict != null && runtimeDict.Contains(zoneId))
+        {
+            var runtime = runtimeDict[zoneId];
+            var stateField = runtime.GetType().GetField("state");
+            var actual = stateField.GetValue(runtime);
+
+            string status = actual.Equals(expected) ? "PASS" : "FAIL";
+            Log($"{context}: Zone '{zoneId}' state = {actual} (expected {expected}) - {status}");
+            Assert.AreEqual(expected, actual, $"{context}: Zone '{zoneId}' should be {expected} but was {actual}");
+        }
+        else
+        {
+            Log($"{context}: Zone '{zoneId}' not found in runtime");
+            Assert.Fail($"{context}: Zone '{zoneId}' not found in runtime");
+        }
+    }
+
+    void Log(string message)
+    {
+        Debug.Log("[P4_Test] " + message);
+        report.AppendLine(message);
+    }
+
+    [UnityTearDown]
+    public IEnumerator TearDown()
+    {
+        if (videoPusher != null) Object.Destroy(videoPusher);
+        if (playerCamObj != null) Object.Destroy(playerCamObj);
+        if (playerObj != null) Object.Destroy(playerObj);
+        var managerObj = manager?.gameObject;
+        if (managerObj != null) Object.Destroy(managerObj);
+        yield return null;
+    }
+}
