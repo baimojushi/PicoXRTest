@@ -56,19 +56,10 @@ async def handle_connection(ws: ServerConnection):
                 role = param.split("=", 1)[1]
     
     if role not in ("unity", "browser"):
-        # Auto-assign if no role specified
-        room = get_room(room_id)
-        if "unity" not in room.peers:
-            role = "unity"
-        elif "browser" not in room.peers:
-            role = "browser"
-        else:
-            log.warning(f"Room {room_id} full, rejecting {ws.remote_address}")
-            await ws.close(4000, "Room full")
-            return
-    
+        await ws.close(4002, "Explicit role required: unity or browser")
+        return
     room = get_room(room_id)
-    
+
     if role in room.peers:
         log.warning(f"Role {role} already taken in room {room_id}")
         await ws.close(4001, f"Role {role} already taken")
@@ -87,7 +78,7 @@ async def handle_connection(ws: ServerConnection):
             log.warning(f"Notify peer failed: {e}")
     
     # Flush pending offer/candidates to new peer
-    if room.pending_offer and role == "browser":
+    if room.pending_offer and role == "unity":
         try:
             await ws.send(json.dumps({"type": "offer", "sdp": room.pending_offer}))
             log.info(f"[{room_id}] Flushed pending offer to {role}")
@@ -95,7 +86,7 @@ async def handle_connection(ws: ServerConnection):
             log.warning(f"Flush offer failed: {e}")
     
     for c in room.pending_candidates:
-        if role == "browser":
+        if role == "unity":
             try:
                 await ws.send(json.dumps(c))
             except Exception as e:
@@ -122,6 +113,8 @@ async def handle_connection(ws: ServerConnection):
                 except Exception:
                     pass
         
+        room.pending_offer = None
+        room.pending_candidates.clear()
         remove_room_if_empty(room_id)
 
 async def handle_message(room_id: str, sender_role: str, message: str):
@@ -134,31 +127,35 @@ async def handle_message(room_id: str, sender_role: str, message: str):
     msg_type = msg.get("type")
     
     if msg_type == "offer":
-        if sender_role != "unity":
-            log.warning(f"[{room_id}] Offer from non-unity: {sender_role}")
+        if sender_role != "browser":
+            log.warning(f"[{room_id}] Offer from non-browser: {sender_role}")
             return
         room.pending_offer = msg.get("sdp")
-        log.info(f"[{room_id}] Received offer from unity, length={len(room.pending_offer)}")
+        if not isinstance(room.pending_offer, str) or not room.pending_offer:
+            return
+        log.info(f"[{room_id}] Received offer from browser, length={len(room.pending_offer)}")
         
         # Forward to browser if connected
-        if "browser" in room.peers:
+        if "unity" in room.peers:
             try:
-                await room.peers["browser"].ws.send(json.dumps({"type": "offer", "sdp": room.pending_offer}))
-                log.info(f"[{room_id}] Forwarded offer to browser")
+                await room.peers["unity"].ws.send(json.dumps({"type": "offer", "sdp": room.pending_offer}))
+                log.info(f"[{room_id}] Forwarded offer to unity")
             except Exception as e:
                 log.warning(f"Forward offer failed: {e}")
     
     elif msg_type == "answer":
-        if sender_role != "browser":
-            log.warning(f"[{room_id}] Answer from non-browser: {sender_role}")
+        if sender_role != "unity":
+            log.warning(f"[{room_id}] Answer from non-unity: {sender_role}")
             return
         sdp = msg.get("sdp")
-        log.info(f"[{room_id}] Received answer from browser, length={len(sdp)}")
+        if not isinstance(sdp, str) or not sdp:
+            return
+        log.info(f"[{room_id}] Received answer from unity, length={len(sdp)}")
         
-        if "unity" in room.peers:
+        if "browser" in room.peers:
             try:
-                await room.peers["unity"].ws.send(json.dumps({"type": "answer", "sdp": sdp}))
-                log.info(f"[{room_id}] Forwarded answer to unity")
+                await room.peers["browser"].ws.send(json.dumps({"type": "answer", "sdp": sdp}))
+                log.info(f"[{room_id}] Forwarded answer to browser")
             except Exception as e:
                 log.warning(f"Forward answer failed: {e}")
     
@@ -178,14 +175,16 @@ async def handle_message(room_id: str, sender_role: str, message: str):
                 except Exception as e:
                     log.warning(f"Forward candidate to browser failed: {e}")
             else:
-                room.pending_candidates.append(candidate_msg)
+                room.pending_candidates.append(candidate_msg) if len(room.pending_candidates) < 128 else None
         else:
-            # Forward to unity
+            # Forward to unity or queue early browser ICE until Unity arrives.
             if "unity" in room.peers:
                 try:
                     await room.peers["unity"].ws.send(json.dumps(candidate_msg))
                 except Exception as e:
                     log.warning(f"Forward candidate to unity failed: {e}")
+            elif len(room.pending_candidates) < 128:
+                room.pending_candidates.append(candidate_msg)
     
     elif msg_type == "ping":
         # Echo back with server timestamp

@@ -1,3 +1,6 @@
+#if P4_LEGACY_STREAMING_TESTS
+// Historical test targets Gallery3DGS.Streaming, absent from this source archive.
+// Do NOT enable without corresponding package and without replacing the permissive reflection assertions.
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -285,32 +288,10 @@ public class Phase4WebRTCTest
         // Simulate joystick input via reflection on DataChannelUdpBridge
         // ============================================================
         Log("\n--- Test 7: DataChannel control message processing ---");
+        Assert.IsNotNull(bridgeType, "Bridge type must exist");
         var bridgeComp = mainCam.GetComponent(bridgeType);
-        if (bridgeComp != null)
-        {
-            // Get private method OnMessage
-            var onMessageMethod = bridgeType.GetMethod("OnMessage",
-                BindingFlags.NonPublic | BindingFlags.Instance);
-            if (onMessageMethod != null)
-            {
-                // Simulate control message: {type:"control", lx:0, ly:1, rx:0, ry:0, use:false, reset:false}
-                var controlJson = "{\"type\":\"control\",\"lx\":0,\"ly\":1,\"rx\":0,\"ry\":0,\"use\":false,\"reset\":false}";
-                var bytes = Encoding.UTF8.GetBytes(controlJson);
-                onMessageMethod.Invoke(bridgeComp, new object[] { bytes });
-
-                // Run a few frames to process
-                for (int i = 0; i < 10; i++)
-                {
-                    updateMethod?.Invoke(manager, null);
-                    yield return null;
-                }
-
-                // Verify player moved forward (ly=1)
-                var newPos = playerObj.transform.position;
-                Log($"Player position after control: {newPos}");
-                Assert.Greater(newPos.z, 1.9f, "Player should have moved forward from control input");
-            }
-        }
+        Assert.IsNotNull(bridgeComp, "Bridge component must exist");
+        Assert.Fail("Legacy Phase4 test must not claim DataChannel E2E success from reflected method or mock. Use Phase4BridgeAdversarialTests and real browser E2E gates.");
 
         // ============================================================
         // Test 8: Wait for Cooling expiry and Eviction
@@ -395,3 +376,4 @@ public class Phase4WebRTCTest
         yield return null;
     }
 }
+#endif

@@ -2,9 +2,17 @@
   "scopedRegistries": [
     {
       "name": "OpenUPM",
-      "url": "https://package.openupm.com",
+      "url": "https://registry.npmmirror.com",
       "scopes": [
-        "com.netpyoung"
+        "com.netpyoung",
+        "com.arloopa"
+      ]
+    },
+    {
+      "name": "Unity",
+      "url": "https://packages.unity.com",
+      "scopes": [
+        "com.unity"
       ]
     }
   ],
@@ -47,7 +55,8 @@
     "com.unity.render-pipelines.universal": "17.0.4",
     "com.unity.ext.nunit": "2.0.5",
     "com.unity.inputsystem": "1.7.0",
-    "com.arloopa.unitysplats": "file:com.arloopa.unitysplats",
-    "com.netpyoung.webp": "file:com.netpyoung.webp"
+    "com.unity.webrtc": "3.0.0-pre.8",
+    "com.arloopa.unitysplats": "1.2.0",
+    "com.netpyoung.webp": "0.3.22"
   }
 }

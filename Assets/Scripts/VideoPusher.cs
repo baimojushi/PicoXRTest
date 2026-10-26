@@ -15,7 +15,7 @@ public class VideoPusher : MonoBehaviour
     public int width = 1280;
     public int height = 720;
     public int framerate = 30;
-    public string signalingUrl = "ws://127.0.0.1:8766";
+    public string signalingUrl = "ws://127.0.0.1:8766/?room=gallery&role=unity";
     public float turnSpeed = 75f;
     public float moveSpeed = 3f;
 
@@ -69,6 +69,11 @@ public class VideoPusher : MonoBehaviour
             Debug.Log("[WebRTC] Added DataChannelUdpBridge component");
         }
 
+        // A browser client drives this stream and holds keyboard focus while it does, so the
+        // player loop must keep running and the camera keep rendering while another window
+        // (the browser) is in front and the editor window is not focused.
+        Application.runInBackground = true;
+
         cts = new CancellationTokenSource();
         StartCoroutine(WebRTC.Update());
 
@@ -104,42 +109,10 @@ public class VideoPusher : MonoBehaviour
         while (inbox.TryDequeue(out var message))
             HandleSignal(message);
 
-        ApplyControl();
+        // Player controls are owned exclusively by GalleryPlayerController via UDP bridge.
     }
 
     // ---------- control ----------
-
-    void ApplyControl()
-    {
-        if (!baselineSet)
-        {
-            baseYaw = cam.transform.eulerAngles.y;
-            basePitch = cam.transform.eulerAngles.x;
-            baselineSet = true;
-        }
-
-        if (Mathf.Abs(rx) > 0.001f || Mathf.Abs(ry) > 0.001f)
-        {
-            yaw += rx * turnSpeed * Time.deltaTime;
-            pitch = Mathf.Clamp(pitch - ry * turnSpeed * Time.deltaTime, -80f, 80f);
-        }
-        cam.transform.rotation = Quaternion.Euler(basePitch + pitch, baseYaw + yaw, 0f);
-
-        if (Mathf.Abs(lx) > 0.001f || Mathf.Abs(ly) > 0.001f)
-        {
-            Vector3 move = cam.transform.forward * ly + cam.transform.right * lx;
-            cam.transform.position += move * moveSpeed * Time.deltaTime;
-        }
-
-        if (useHeld)
-        {
-            if (Physics.Raycast(cam.transform.position, cam.transform.forward, out var hit, 20f))
-            {
-                Debug.Log($"[WebRTC] USE hit {hit.collider.name} at {hit.point}");
-                useHeld = false;
-            }
-        }
-    }
 
     void SendState()
     {
@@ -193,6 +166,11 @@ public class VideoPusher : MonoBehaviour
                 catch (Exception e) { Debug.LogWarning($"[WebRTC] AddIceCandidate: {e.Message}"); }
                 break;
             }
+            case "peer_left":
+            {
+                ClosePeer();
+                break;
+            }
             case "ping":
             {
                 long t0 = JsonLong(json, "t0");
@@ -217,7 +195,7 @@ public class VideoPusher : MonoBehaviour
 
         pc = new RTCPeerConnection();
         remoteDescriptionSet = false;
-        pendingCandidates.Clear();
+        // Preserve ICE received before the offer; flush after remote description.
 
         pc.OnIceCandidate = candidate =>
         {
@@ -253,17 +231,25 @@ public class VideoPusher : MonoBehaviour
                     {
                         // Forward to bridge
                         dataChannelBridge.EnqueueBytes(bytes);
-                        // Also handle locally for backward compat
-                        OnControlMessage(bytes);
+                        // Only non-control telemetry is handled locally; never move camera.
                     };
                     Debug.Log("[WebRTC] control datachannel bridged to UDP");
+
+                    // Unity WebRTC hands the channel over from OnDataChannel, which can happen
+                    // after it already reached Open. OnOpen then never fires, the bridge would
+                    // stay "closed", and every control packet would be dropped silently.
+                    if (channel.ReadyState == RTCDataChannelState.Open)
+                    {
+                        Debug.Log("[WebRTC] control datachannel was already open; notifying bridge");
+                        dataChannelBridge.OnChannelOpened();
+                    }
                 }
                 else
                 {
-                    // Fallback: original behavior
-                    channel.OnOpen = () => Debug.Log("[WebRTC] datachannel open");
-                    channel.OnClose = () => Debug.Log("[WebRTC] datachannel closed");
-                    channel.OnMessage = OnControlMessage;
+                    Debug.LogError("[WebRTC] Missing DataChannelUdpBridge; controls disabled");
+                    channel.OnOpen = () => Debug.LogError("[WebRTC] No control bridge");
+                    channel.OnClose = () => { };
+                    channel.OnMessage = bytes => { };
                 }
             }
             else
@@ -271,7 +257,7 @@ public class VideoPusher : MonoBehaviour
                 // Other datachannels (if any)
                 channel.OnOpen = () => Debug.Log($"[WebRTC] datachannel '{channel.Label}' open");
                 channel.OnClose = () => Debug.Log($"[WebRTC] datachannel '{channel.Label}' closed");
-                channel.OnMessage = OnControlMessage;
+                channel.OnMessage = bytes => { };
             }
         };
 
@@ -323,11 +309,7 @@ public class VideoPusher : MonoBehaviour
         string type = JsonField(json, "type");
         if (type == "control")
         {
-            lx = JsonFloat(json, "lx");
-            ly = JsonFloat(json, "ly");
-            rx = JsonFloat(json, "rx");
-            ry = JsonFloat(json, "ry");
-            if (JsonBool(json, "use")) useHeld = true;
+            // Input is exclusively consumed by DataChannelUdpBridge.
         }
         else if (type == "ping")
         {
@@ -345,6 +327,7 @@ public class VideoPusher : MonoBehaviour
 
     void ClosePeer()
     {
+        dataChannelBridge?.OnChannelClosed();
         if (control != null)
         {
             try { control.Close(); } catch { }
@@ -385,6 +368,7 @@ public class VideoPusher : MonoBehaviour
                 Debug.LogWarning("[WebRTC] signaling error: " + e.Message);
             }
             socket = null;
+            inbox.Enqueue("{\"type\":\"peer_left\"}");
             if (cts.IsCancellationRequested) break;
             try { await Task.Delay(2000, cts.Token); } catch { break; }
         }
@@ -562,7 +546,7 @@ public static class WebRTCBootstrap
         }
 
         var pusher = cam.gameObject.AddComponent<VideoPusher>();
-        pusher.signalingUrl = $"ws://127.0.0.1:{port}";
+        pusher.signalingUrl = $"ws://127.0.0.1:{port}/?room=gallery&role=unity";
         Debug.Log($"[WebRTC] bootstrap attached to '{cam.name}', signaling {pusher.signalingUrl}");
     }
 }

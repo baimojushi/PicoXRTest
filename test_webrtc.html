@@ -55,13 +55,14 @@ function log(msg, cls='') {
   console.log('[MolinkTest]', msg);
 }
 
-const SIGNAL = 'ws://' + location.hostname + ':8766';
+const SIGNAL = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.hostname + ':8766/?room=gallery&role=browser';
 let ws, pc, dc;
 let lastStats = {framesDecoded:0, bytesReceived:0, ts:0};
 let lastUiFrames = 0;
 let statsTimer = null;
 let offerTimer = null;
 let answered = false;
+let controlTimer = null;
 
 function sendSignal(obj) {
   if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(obj));
@@ -80,6 +81,8 @@ function connectSignal() {
   };
   ws.onmessage = onSignal;
   ws.onclose = () => {
+    stopControls();
+    if (pc) { pc.close(); pc = null; }
     setText('ws', '断开');
     log('信令断开，2s 重连', 'warn');
     setTimeout(connectSignal, 2000);
@@ -100,6 +103,9 @@ function onSignal(ev) {
   } else if (msg.type === 'candidate') {
     pc.addIceCandidate({candidate:msg.candidate, sdpMid:msg.sdpMid, sdpMLineIndex:msg.sdpMLineIndex})
       .catch(e => log('addIceCandidate 失败: ' + e.message, 'err'));
+  } else if (msg.type === 'peer_left') {
+    stopControls();
+    log('对端已离线: ' + msg.role, 'warn');
   } else if (msg.type === 'peer') {
     log('对端加入: ' + msg.role);
   }
@@ -128,7 +134,7 @@ function createPeer() {
 
   dc = pc.createDataChannel('control', {ordered:true});
   dc.onopen = () => { setText('dc', 'open'); log('DataChannel 已打开', 'ok'); startControlLoop(); };
-  dc.onclose = () => { setText('dc', 'closed'); log('DataChannel 关闭', 'warn'); };
+  dc.onclose = () => { stopControls(); setText('dc', 'closed'); log('DataChannel 关闭', 'warn'); };
   dc.onmessage = e => {
     let msg; try { msg = JSON.parse(e.data); } catch { return; }
     if (msg.type === 'state') {
@@ -142,6 +148,7 @@ function createPeer() {
 
 async function startOffer() {
   try {
+    stopControls();
     if (pc) { pc.close(); pc = null; }
     createPeer();
     const offer = await pc.createOffer({offerToReceiveVideo:true, offerToReceiveAudio:false});
@@ -161,17 +168,72 @@ async function startOffer() {
 const ctl = {lx:0, ly:0, rx:0, ry:0, use:false, reset:false};
 const keys = new Set();
 const sent = {lx:9, ly:9, rx:9, ry:9, use:null, reset:null};
-function startControlLoop() {
-  setInterval(() => {
-    if (!dc || dc.readyState !== 'open') return;
-    const same = Math.abs(ctl.lx-sent.lx)<0.02 && Math.abs(ctl.ly-sent.ly)<0.02 &&
-                 Math.abs(ctl.rx-sent.rx)<0.02 && Math.abs(ctl.ry-sent.ry)<0.02 && 
-                 ctl.use===sent.use && ctl.reset===sent.reset;
-    if (same) return;
-    Object.assign(sent, ctl);
-    dc.send(JSON.stringify({type:'control', lx:ctl.lx, ly:ctl.ly, rx:ctl.rx, ry:ctl.ry, use:ctl.use, reset:ctl.reset}));
-  }, 33);
+
+// ---- 鼠标拖动转视角 ----
+// 方向键走的是"速率"通道（Unity 每帧按速度积分），鼠标需要的是"位移"通道：
+// 拖了多少像素就转多少角度，所以单独累加像素增量随控制包一起发出。
+const mouseLook = {dragging:false, lastX:0, lastY:0, dx:0, dy:0, pointerId:null};
+const videoEl = document.getElementById('v');
+if (videoEl) {
+  videoEl.style.cursor = 'grab';
+  videoEl.addEventListener('pointerdown', e => {
+    mouseLook.dragging = true;
+    mouseLook.pointerId = e.pointerId;
+    mouseLook.lastX = e.clientX;
+    mouseLook.lastY = e.clientY;
+    videoEl.style.cursor = 'grabbing';
+    try { videoEl.setPointerCapture(e.pointerId); } catch {}
+    e.preventDefault();
+  });
+  videoEl.addEventListener('pointermove', e => {
+    if (!mouseLook.dragging) return;
+    mouseLook.dx += (e.clientX - mouseLook.lastX);
+    mouseLook.dy += (e.clientY - mouseLook.lastY);
+    mouseLook.lastX = e.clientX;
+    mouseLook.lastY = e.clientY;
+  });
+  const endMouseDrag = e => {
+    if (!mouseLook.dragging) return;
+    mouseLook.dragging = false;
+    try { if (mouseLook.pointerId !== null) videoEl.releasePointerCapture(mouseLook.pointerId); } catch {}
+    mouseLook.pointerId = null;
+    videoEl.style.cursor = 'grab';
+    // 松手时立刻把剩余像素发出去，不等 50ms 定时器（后台标签的定时器会被浏览器节流）。
+    try { sendControl(); } catch {}
+  };
+  videoEl.addEventListener('pointerup', endMouseDrag);
+  videoEl.addEventListener('pointercancel', endMouseDrag);
+  addEventListener('pointerup', endMouseDrag);
+  videoEl.addEventListener('contextmenu', e => e.preventDefault());
 }
+function sendControl() {
+  if (!dc || dc.readyState !== 'open') return;
+  // mdx/mdy 是鼠标本次拖动的像素增量，Unity 按像素比例直接换算成角度。
+  dc.send(JSON.stringify({type:'control', lx:ctl.lx, ly:ctl.ly, rx:ctl.rx, ry:ctl.ry, use:ctl.use, reset:ctl.reset,
+                         mdx:mouseLook.dx, mdy:mouseLook.dy}));
+  mouseLook.dx = 0; mouseLook.dy = 0;
+}
+function stopControls() {
+  if (controlTimer) clearInterval(controlTimer);
+  controlTimer = null;
+  if (pingTimer) clearInterval(pingTimer);
+  pingTimer = null;
+  keys.clear();
+  Object.assign(ctl, {lx:0,ly:0,rx:0,ry:0,use:false,reset:false});
+  // 失焦时清掉未发送的鼠标增量，避免回到页面时视角突然跳一大截。
+  mouseLook.dx = 0; mouseLook.dy = 0;
+  mouseLook.dragging = false;
+  try { sendControl(); } catch {}
+}
+function startControlLoop() {
+  stopControls();
+  controlTimer = setInterval(sendControl, 50); // 20 Hz continuous state, no stale held controls
+  sendControl();
+  startPingLoop();
+}
+addEventListener('blur', stopControls);
+addEventListener('focus', () => { if (dc && dc.readyState === 'open' && !controlTimer) startControlLoop(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) stopControls(); else if (dc && dc.readyState === 'open' && !controlTimer) startControlLoop(); });
 addEventListener('keydown', e => {
   keys.add(e.code);
   if (e.code === 'Space') { ctl.use = true; e.preventDefault(); }
@@ -240,8 +302,7 @@ function startPingLoop() {
   }, 1000);
 }
 // 在 startControlLoop 里已经会在 dc.onopen 时启动控制循环，这里也挂一个
-const _origStartControl = startControlLoop;
-startControlLoop = () => { _origStartControl(); startPingLoop(); };
+
 
 log('页面加载完成，准备连接');
 connectSignal();

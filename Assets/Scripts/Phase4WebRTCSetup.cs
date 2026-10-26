@@ -5,7 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Linq;
 using UnityEngine;
-using Gallery3DGS.Streaming;
+using GalleryRuntime;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
@@ -105,23 +105,13 @@ public class Phase4WebRTCSetup : MonoBehaviour
         var maxHighField = typeof(SplatZoneManager).GetField("maxConcurrentHighZones", BindingFlags.NonPublic | BindingFlags.Instance);
         maxHighField?.SetValue(manager, 1);
 
-        // Set observer BEFORE activating manager
-        manager.SetObserver(playerObj.transform);
+        // Set observer BEFORE activating manager. SplatZoneManager loads its zones from the
+        // StreamingAssets manifest in its own Start(), so no explicit init call is required.
+        manager.observer = playerObj.transform;
 
         // Now activate the manager
         managerObj.SetActive(true);
-
-        // Start initialization
-        var initTask = manager.InitializeAsync();
-        while (!initTask.IsCompleted)
-        {
-            yield return null;
-        }
-        if (initTask.IsFaulted)
-        {
-            Debug.LogError($"[Phase4Setup] InitializeAsync failed: {initTask.Exception}");
-            yield break;
-        }
+        yield return null;
 
         Debug.Log("[Phase4Setup] Scene setup complete");
     }

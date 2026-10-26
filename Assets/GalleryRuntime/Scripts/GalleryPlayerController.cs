@@ -18,6 +18,7 @@ namespace GalleryRuntime
         public float pitchSpeedDegPerSec = 90f;
         public float minPitch = -75f;
         public float maxPitch = 75f;
+        public float mouseDegPerPixel = 0.25f;
 
         [Header("Reset")]
         public Transform resetPose;
@@ -30,6 +31,10 @@ namespace GalleryRuntime
         private void Awake()
         {
             _cc = GetComponent<CharacterController>();
+            if (remoteInput == null)
+                remoteInput = FindFirstObjectByType<RemoteControlUdpReceiver>();
+            if (remoteInput == null)
+                Debug.LogWarning("[GalleryPlayerController] RemoteControlUdpReceiver missing; WebRTC movement disabled");
             _yaw = transform.eulerAngles.y;
             if (viewTransform != null)
             {
@@ -69,6 +74,18 @@ namespace GalleryRuntime
             _pitch = Mathf.Clamp(
                 _pitch - look.y * pitchSpeedDegPerSec * Time.deltaTime,
                 minPitch, maxPitch);
+
+            // Mouse drag is an absolute delta: the pixels travelled map straight to degrees,
+            // which is what makes "drag to look around" feel 1:1 instead of speed-driven.
+            if (remoteInput != null)
+            {
+                Vector2 mouseDelta = remoteInput.ConsumeMouseDelta();
+                if (mouseDelta.sqrMagnitude > 0f)
+                {
+                    _yaw += mouseDelta.x * mouseDegPerPixel;
+                    _pitch = Mathf.Clamp(_pitch - mouseDelta.y * mouseDegPerPixel, minPitch, maxPitch);
+                }
+            }
 
             transform.rotation = Quaternion.Euler(0f, _yaw, 0f);
             if (viewTransform != null)

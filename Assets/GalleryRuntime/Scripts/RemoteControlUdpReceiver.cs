@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -15,6 +16,8 @@ namespace GalleryRuntime
         public float moveY;
         public float lookX;
         public float lookY;
+        public float mouseDX;
+        public float mouseDY;
         public bool interact;
         public bool reset;
     }
@@ -32,14 +35,26 @@ namespace GalleryRuntime
 
         public Vector2 Move { get; private set; }
         public Vector2 Look { get; private set; }
+        public Vector2 MouseDelta { get; private set; }
         public bool InteractPressedThisFrame { get; private set; }
         public bool ResetPressedThisFrame { get; private set; }
+
+        /// <summary>
+        /// Returns the mouse drag accumulated since the last call and clears it, so each
+        /// pixel delta is applied exactly once even if several packets land in one frame.
+        /// </summary>
+        public Vector2 ConsumeMouseDelta()
+        {
+            var delta = MouseDelta;
+            MouseDelta = Vector2.zero;
+            return delta;
+        }
 
         private UdpClient _udp;
         private Thread _thread;
         private volatile bool _running;
         private readonly object _gate = new object();
-        private string _latestRaw;
+        private readonly Queue<string> _pendingRaw = new Queue<string>();
         private float _lastReceiveTime = -999f;
         private bool _previousInteract;
         private bool _previousReset;
@@ -59,7 +74,7 @@ namespace GalleryRuntime
             if (_running)
                 return;
 
-            _udp = new UdpClient(new IPEndPoint(IPAddress.Any, udpPort));
+            _udp = new UdpClient(new IPEndPoint(IPAddress.Loopback, udpPort));
             _running = true;
             _thread = new Thread(ReceiveLoop)
             {
@@ -80,7 +95,7 @@ namespace GalleryRuntime
                     var data = _udp.Receive(ref ep);
                     var raw = Encoding.UTF8.GetString(data);
                     lock (_gate)
-                        _latestRaw = raw;
+                        _pendingRaw.Enqueue(raw);
                 }
                 catch (SocketException)
                 {
@@ -103,36 +118,44 @@ namespace GalleryRuntime
             InteractPressedThisFrame = false;
             ResetPressedThisFrame = false;
 
-            string raw = null;
+            List<string> batch = null;
             lock (_gate)
             {
-                if (_latestRaw != null)
+                if (_pendingRaw.Count > 0)
                 {
-                    raw = _latestRaw;
-                    _latestRaw = null;
+                    batch = new List<string>(_pendingRaw);
+                    _pendingRaw.Clear();
                 }
             }
 
-            if (!string.IsNullOrEmpty(raw))
+            if (batch != null)
             {
-                try
+                foreach (var raw in batch)
                 {
-                    var p = JsonUtility.FromJson<RemoteInputPacket>(raw);
-                    Move = Vector2.ClampMagnitude(new Vector2(p.moveX, p.moveY), 1f);
-                    Look = Vector2.ClampMagnitude(new Vector2(p.lookX, p.lookY), 1f);
+                    if (string.IsNullOrEmpty(raw)) continue;
+                    try
+                    {
+                        var p = JsonUtility.FromJson<RemoteInputPacket>(raw);
+                        Move = Vector2.ClampMagnitude(new Vector2(p.moveX, p.moveY), 1f);
+                        Look = Vector2.ClampMagnitude(new Vector2(p.lookX, p.lookY), 1f);
 
-                    InteractPressedThisFrame = p.interact && !_previousInteract;
-                    ResetPressedThisFrame = p.reset && !_previousReset;
-                    _previousInteract = p.interact;
-                    _previousReset = p.reset;
-                    _lastReceiveTime = Time.unscaledTime;
+                        // Mouse drag is an absolute pixel delta, so packets that arrive within
+                        // one frame must add up instead of overwriting each other.
+                        MouseDelta += new Vector2(p.mouseDX, p.mouseDY);
 
-                    if (verboseLogging && p.seq % 60 == 0)
-                        Debug.Log($"[RemoteInput] seq={p.seq} move={Move} look={Look}");
-                }
-                catch (Exception e)
-                {
-                    Debug.LogWarning($"[RemoteControlUdpReceiver] Bad packet: {e.Message}");
+                        InteractPressedThisFrame |= p.interact && !_previousInteract;
+                        ResetPressedThisFrame |= p.reset && !_previousReset;
+                        _previousInteract = p.interact;
+                        _previousReset = p.reset;
+                        _lastReceiveTime = Time.unscaledTime;
+
+                        if (verboseLogging && p.seq % 60 == 0)
+                            Debug.Log($"[RemoteInput] seq={p.seq} move={Move} look={Look} mouse={MouseDelta}");
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogWarning($"[RemoteControlUdpReceiver] Bad packet: {e.Message} raw='{raw}'");
+                    }
                 }
             }
 
@@ -140,6 +163,7 @@ namespace GalleryRuntime
             {
                 Move = Vector2.zero;
                 Look = Vector2.zero;
+                MouseDelta = Vector2.zero;
                 _previousInteract = false;
                 _previousReset = false;
             }

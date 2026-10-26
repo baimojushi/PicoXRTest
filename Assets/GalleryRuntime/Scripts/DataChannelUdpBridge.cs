@@ -19,7 +19,7 @@ public class DataChannelUdpBridge : MonoBehaviour
     
     [Header("DataChannel Settings")]
     public int sendRateHz = 30;      // 本地 UDP 发送频率
-    public float disconnectTimeoutSec = 5f;  // 断线自动清零保护
+    public float disconnectTimeoutSec = 0.5f;  // 断线自动清零保护
     
     private UdpClient udpClient;
     private IPEndPoint udpEndpoint;
@@ -38,6 +38,9 @@ public class DataChannelUdpBridge : MonoBehaviour
     private float lx, ly, rx, ry;
     private bool usePressed, resetPressed;
     private bool hasPendingInput = false;
+    private int packetSeq = 0;
+    // 鼠标拖动像素增量（绝对位移，不速率）
+    private float pendingMouseDx, pendingMouseDy;
     
     void Awake()
     {
@@ -59,8 +62,21 @@ public class DataChannelUdpBridge : MonoBehaviour
     /// </summary>
     public void EnqueueBytes(byte[] bytes)
     {
-        if (bytes != null && bytes.Length > 0)
+        if (bytes == null || bytes.Length == 0)
         {
+            return;
+        }
+
+        lock (stateLock)
+        {
+            // A received message is itself proof the channel is open; trusting only OnOpen
+            // drops all input whenever that callback never fires.
+            if (!channelOpen)
+            {
+                channelOpen = true;
+                Debug.Log("[DataChannelBridge] first message received; treating channel as open");
+            }
+
             inbox.Enqueue(bytes);
         }
     }
@@ -73,7 +89,9 @@ public class DataChannelUdpBridge : MonoBehaviour
         lock (stateLock)
         {
             channelOpen = true;
-            lastMessageTime = DateTime.UtcNow;
+            lastMessageTime = DateTime.MinValue;
+            ClearInputLocked();
+            while (inbox.TryDequeue(out _)) {}
         }
         Debug.Log("[DataChannelBridge] DataChannel opened");
     }
@@ -86,6 +104,8 @@ public class DataChannelUdpBridge : MonoBehaviour
         lock (stateLock)
         {
             channelOpen = false;
+            ClearInputLocked();
+            while (inbox.TryDequeue(out _)) {}
         }
         Debug.Log("[DataChannelBridge] DataChannel closed");
         // 发送清零保护
@@ -96,37 +116,56 @@ public class DataChannelUdpBridge : MonoBehaviour
     /// 解析 DataChannel JSON 消息并更新内部状态
     /// 预期格式: {"type":"control","lx":-1..1,"ly":-1..1,"rx":-1..1,"ry":-1..1,"use":true,"reset":false}
     /// </summary>
+    [Serializable]
+    private class ControlPacket
+    {
+        public string type;
+        public float lx, ly, rx, ry;
+        // 鼠标拖动像素增量（绝对位移，不是速率）
+        public float mdx, mdy;
+        public bool use, reset;
+    }
+
+    private void ClearInputLocked()
+    {
+        lx = ly = rx = ry = 0f;
+        usePressed = resetPressed = false;
+        pendingMouseDx = 0f;
+        pendingMouseDy = 0f;
+        hasPendingInput = true;
+    }
+
     void ProcessMessage(byte[] bytes)
     {
         try
         {
-            string json = Encoding.UTF8.GetString(bytes);
-            
-            // 简单 JSON 解析（避免引入 Newtonsoft）
-            if (json.Contains("\"type\":\"control\"") || json.Contains("\"type\":\"control\""))
+            var packet = JsonUtility.FromJson<ControlPacket>(Encoding.UTF8.GetString(bytes));
+            if (packet == null || packet.type != "control") return; // ping MUST NOT refresh control timeout
+            if (float.IsNaN(packet.lx) || float.IsNaN(packet.ly) ||
+                float.IsNaN(packet.rx) || float.IsNaN(packet.ry) ||
+                float.IsInfinity(packet.lx) || float.IsInfinity(packet.ly) ||
+                float.IsInfinity(packet.rx) || float.IsInfinity(packet.ry)) return;
+            if (float.IsNaN(packet.mdx) || float.IsNaN(packet.mdy) ||
+                float.IsInfinity(packet.mdx) || float.IsInfinity(packet.mdy)) return;
+            lock (stateLock)
             {
-                lx = ExtractFloat(json, "lx");
-                ly = ExtractFloat(json, "ly");
-                rx = ExtractFloat(json, "rx");
-                ry = ExtractFloat(json, "ry");
-                usePressed = ExtractBool(json, "use");
-                resetPressed = ExtractBool(json, "reset");
-                
+                if (!channelOpen) return;
+                lx = Mathf.Clamp(packet.lx, -1f, 1f);
+                ly = Mathf.Clamp(packet.ly, -1f, 1f);
+                rx = Mathf.Clamp(packet.rx, -1f, 1f);
+                ry = Mathf.Clamp(packet.ry, -1f, 1f);
+                usePressed = packet.use;
+                resetPressed = packet.reset;
+                // 像素增量累加后随下一个 UDP 包发出，且只发一次。
+                pendingMouseDx += packet.mdx;
+                pendingMouseDy += packet.mdy;
                 hasPendingInput = true;
                 lastMessageTime = DateTime.UtcNow;
             }
-            else if (json.Contains("\"type\":\"ping\""))
-            {
-                // 心跳回复（可选）
-                lastMessageTime = DateTime.UtcNow;
-            }
         }
-        catch (Exception e)
-        {
-            Debug.LogWarning($"[DataChannelBridge] Parse error: {e.Message}");
-        }
+        catch (Exception e) { Debug.LogWarning($"[DataChannelBridge] Parse error: {e.Message}"); }
     }
-    
+
     static float ExtractFloat(string json, string key)
     {
         string pattern = "\"" + key + "\"";
@@ -175,24 +214,14 @@ public class DataChannelUdpBridge : MonoBehaviour
                 ProcessMessage(bytes);
             }
             
-            // 断线保护：超过超时未收到消息，自动清零
+            // Heartbeat is deliberately ignored. Stale controls cannot remain active.
             lock (stateLock)
             {
                 if (channelOpen && (DateTime.UtcNow - lastMessageTime).TotalSeconds > disconnectTimeoutSec)
-                {
-                    Debug.LogWarning("[DataChannelBridge] Control timeout, sending zero input");
-                    lx = ly = rx = ry = 0f;
-                    usePressed = resetPressed = false;
-                    hasPendingInput = true;
-                }
+                    ClearInputLocked();
+                if (hasPendingInput || channelOpen) SendCurrentState();
             }
-            
-            // 发送当前状态（即使没变也定时发，保持心跳）
-            if (hasPendingInput || channelOpen)
-            {
-                SendCurrentState();
-            }
-            
+
             var elapsed = DateTime.UtcNow - start;
             var remaining = interval - elapsed;
             if (remaining > TimeSpan.Zero)
@@ -204,33 +233,42 @@ public class DataChannelUdpBridge : MonoBehaviour
     {
         try
         {
-            // UDP 协议格式：与现有 RemoteControlUdpReceiver 兼容
-            // {"lx":0.5,"ly":-1.0,"rx":0.0,"ry":0.2,"use":false,"reset":true}
-            var json = $"{{\"lx\":{lx:F3},\"ly\":{ly:F3},\"rx\":{rx:F3},\"ry\":{ry:F3},\"use\":{usePressed.ToString().ToLower()},\"reset\":{resetPressed.ToString().ToLower()}}}";
+            // Receiver expects RemoteInputPacket: moveX/moveY/lookX/lookY/interact/reset.
+            // mouseDX/mouseDY carry the absolute mouse drag in pixels.
+            // Built by explicit concatenation: string.Format mis-parses an escaped "}}"
+            // that follows a format item and leaks the format specifier as literal text.
+            var ci = System.Globalization.CultureInfo.InvariantCulture;
+            var json = "{\"seq\":" + packetSeq.ToString(ci) +
+                       ",\"moveX\":" + Num(lx, ci) +
+                       ",\"moveY\":" + Num(ly, ci) +
+                       ",\"lookX\":" + Num(rx, ci) +
+                       ",\"lookY\":" + Num(ry, ci) +
+                       ",\"interact\":" + (usePressed ? "true" : "false") +
+                       ",\"reset\":" + (resetPressed ? "true" : "false") +
+                       ",\"mouseDX\":" + Num(pendingMouseDx, ci) +
+                       ",\"mouseDY\":" + Num(pendingMouseDy, ci) + "}";
+            packetSeq++;
             var bytes = Encoding.UTF8.GetBytes(json);
             udpClient.Send(bytes, bytes.Length, udpEndpoint);
+            pendingMouseDx = 0f;
+            pendingMouseDy = 0f;
             hasPendingInput = false;
         }
-        catch (Exception e)
-        {
-            Debug.LogWarning($"[DataChannelBridge] UDP send error: {e.Message}");
-        }
+        catch (Exception e) { Debug.LogWarning($"[DataChannelBridge] UDP send error: {e.Message}"); }
     }
-    
+
+    // JSON has no NaN/Infinity, so non-finite values are sent as 0.
+    static string Num(float v, System.Globalization.CultureInfo ci)
+    {
+        if (float.IsNaN(v) || float.IsInfinity(v)) v = 0f;
+        return v.ToString("F3", ci);
+    }
+
     void SendZeroInput()
     {
-        try
-        {
-            var json = "{\"lx\":0,\"ly\":0,\"rx\":0,\"ry\":0,\"use\":false,\"reset\":false}";
-            var bytes = Encoding.UTF8.GetBytes(json);
-            udpClient.Send(bytes, bytes.Length, udpEndpoint);
-        }
-        catch (Exception e)
-        {
-            Debug.LogWarning($"[DataChannelBridge] UDP zero send error: {e.Message}");
-        }
+        lock (stateLock) { ClearInputLocked(); SendCurrentState(); }
     }
-    
+
     void ReceiveLoop(object tokenObj)
     {
         // 可选：接收 UDP 回包（如果 RemoteControlUdpReceiver 有反馈）
@@ -264,7 +302,7 @@ public class DataChannelUdpBridge : MonoBehaviour
         try { sendThread?.Join(100); } catch { }
         try { receiveThread?.Join(100); } catch { }
         
-        if (channelOpen) SendZeroInput();
+        SendZeroInput();
         udpClient?.Close();
         udpClient?.Dispose();
         Debug.Log("[DataChannelBridge] Stopped");
