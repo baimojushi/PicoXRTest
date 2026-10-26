@@ -1,0 +1,38 @@
+# Unity writes all text assets with LF. Normalizing the whole repository to LF (and
+# checking out LF on Windows too) stops every Unity save from showing up as a
+# whole-file diff and keeps `git status` free of line-ending-only modifications.
+* text=auto eol=lf
+
+# Windows batch files must keep CRLF (LF-only batch files can break labels/goto).
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary assets: never convert, never diff as text.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.tga binary
+*.psd binary
+*.tif binary
+*.tiff binary
+*.exr binary
+*.hdr binary
+*.dds binary
+*.wav binary
+*.mp3 binary
+*.ogg binary
+*.fbx binary
+*.blend binary
+*.ply binary
+*.dll binary
+*.so binary
+*.exe binary
+*.a binary
+*.lib binary
+*.pdb binary
+*.jar binary
+*.zip binary
+*.gz binary
+*.tar binary
+*.7z binary
+*.unitypackage binary
