@@ -24,6 +24,7 @@
 *.fbx binary
 *.blend binary
 *.ply binary
+*.lcc2 binary
 *.dll binary
 *.so binary
 *.exe binary
