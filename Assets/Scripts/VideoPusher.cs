@@ -193,7 +193,20 @@ public class VideoPusher : MonoBehaviour
     {
         ClosePeer();
 
-        pc = new RTCPeerConnection();
+        // 公网访问：默认配置只有 host 候选（内网地址），公网对端无法回连。
+        // 加 STUN 让 ICE 拿到 srflx（公网映射）候选；国内网络优先腾讯/小米，
+        // Google/Cloudflare 兜底（ICE 会全部探测，谁响应用谁）。局域网场景不受影响。
+        RTCConfiguration rtcConfig = new RTCConfiguration
+        {
+            iceServers = new[]
+            {
+                new RTCIceServer { urls = new[] { "stun:stun.qq.com:3478" } },
+                new RTCIceServer { urls = new[] { "stun:stun.miwifi.com:3478" } },
+                new RTCIceServer { urls = new[] { "stun:stun.l.google.com:19302" } },
+                new RTCIceServer { urls = new[] { "stun:stun.cloudflare.com:3478" } },
+            }
+        };
+        pc = new RTCPeerConnection(ref rtcConfig);
         remoteDescriptionSet = false;
         // Preserve ICE received before the offer; flush after remote description.
 
@@ -538,6 +551,13 @@ public static class WebRTCBootstrap
         int idx = Array.IndexOf(args, "-webrtc-port");
         if (idx >= 0 && idx + 1 < args.Length) int.TryParse(args[idx + 1], out port);
 
+        // 房间名可经 -webrtc-room 覆盖：公网入口（Funnel）下房间名即门牌，
+        // 用随机串避免陌生人抢占 browser 控制位；默认 gallery 保持局域网行为。
+        string room = "gallery";
+        int ridx = Array.IndexOf(args, "-webrtc-room");
+        if (ridx >= 0 && ridx + 1 < args.Length && !string.IsNullOrWhiteSpace(args[ridx + 1]))
+            room = args[ridx + 1].Trim();
+
         var cam = Camera.main;
         if (cam == null)
         {
@@ -546,7 +566,7 @@ public static class WebRTCBootstrap
         }
 
         var pusher = cam.gameObject.AddComponent<VideoPusher>();
-        pusher.signalingUrl = $"ws://127.0.0.1:{port}/?room=gallery&role=unity";
+        pusher.signalingUrl = $"ws://127.0.0.1:{port}/?room={room}&role=unity";
         Debug.Log($"[WebRTC] bootstrap attached to '{cam.name}', signaling {pusher.signalingUrl}");
     }
 }

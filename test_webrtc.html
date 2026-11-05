@@ -2,46 +2,143 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>MoLink WebRTC 联调</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#05080b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>MoLink 遥控</title>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;background:#05080b;color:#e8eef4;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:hidden}
-  #v{position:fixed;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
-  #hud{position:fixed;top:0;left:0;right:0;padding:10px 12px;background:linear-gradient(#000c,#0000);pointer-events:none}
-  #hud b{color:#00d4aa}
-  .row{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:3px}
-  .k{color:#6b7c8a}
-  #log{position:fixed;left:0;right:0;bottom:0;max-height:34vh;overflow:auto;padding:8px 12px;background:#000b;font-size:11px;line-height:1.45}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    position:fixed;inset:0;overflow:hidden;background:#05080b;color:#e8eef4;
+    font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    touch-action:none;overscroll-behavior:none;
+    user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+  }
+  #v{position:fixed;inset:0;width:100%;height:100%;object-fit:contain;background:#000;touch-action:none}
+
+  /* ---- 顶部状态条：胶囊只读，拖视角可穿透 ---- */
+  #topbar{
+    position:fixed;top:0;left:0;right:0;z-index:30;pointer-events:none;
+    display:flex;justify-content:space-between;align-items:flex-start;gap:8px;
+    padding:calc(6px + env(safe-area-inset-top)) calc(8px + env(safe-area-inset-right)) 6px calc(8px + env(safe-area-inset-left));
+    background:linear-gradient(#000c,#0000);
+  }
+  #chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{background:#000a;border:1px solid #ffffff14;border-radius:999px;padding:3px 9px;font-size:11px;color:#9fb0bd;white-space:nowrap}
+  .chip b{color:#00d4aa;font-weight:600;margin-left:3px}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#666;margin-right:5px;vertical-align:1px}
+  .dot.on{background:#7ee787;box-shadow:0 0 6px #7ee78788}
+  .dot.off{background:#ff6b6b}
+  .dot.wait{background:#e3b341}
+  #tools{display:flex;gap:6px;pointer-events:auto}
+  #tools button{
+    width:38px;height:38px;border-radius:10px;border:1px solid #ffffff22;background:#000a;
+    color:#cfe3ee;font-size:16px;line-height:1;cursor:pointer;touch-action:manipulation;
+  }
+  #tools button:active{background:#ffffff22}
+
+  /* ---- 调试抽屉：完整数据 + 操作说明 + 日志 ---- */
+  #drawer{
+    position:fixed;z-index:29;max-height:58vh;overflow:auto;
+    top:calc(48px + env(safe-area-inset-top));
+    left:calc(8px + env(safe-area-inset-left));
+    right:calc(8px + env(safe-area-inset-right));
+    background:#000d;border:1px solid #ffffff18;border-radius:12px;padding:10px 12px;
+    backdrop-filter:blur(6px);
+  }
+  #drawer.hidden{display:none}
+  #grid{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:12px}
+  #grid .k{color:#6b7c8a}
+  #grid b{color:#00d4aa;font-weight:600;word-break:break-all}
+  #keys{margin-top:8px;color:#6b7c8a;font-size:11px}
+  #log{margin-top:8px;border-top:1px solid #ffffff12;padding-top:6px;font-size:11px;line-height:1.45;max-height:26vh;overflow:auto}
   #log div{white-space:pre-wrap;word-break:break-all}
   .err{color:#ff6b6b}.ok{color:#7ee787}.warn{color:#e3b341}
-  #keys{position:fixed;right:12px;bottom:calc(34vh + 12px);color:#6b7c8a;text-align:right;font-size:11px;pointer-events:none}
+
+  /* ---- 触控：左摇杆（移动）+ 右动作键 ---- */
+  #joy{
+    position:fixed;z-index:20;touch-action:none;
+    left:calc(18px + env(safe-area-inset-left));
+    bottom:calc(18px + env(safe-area-inset-bottom));
+    width:132px;height:132px;border-radius:50%;
+    background:#ffffff10;border:1px solid #ffffff22;
+  }
+  #joy::after{content:'';position:absolute;inset:0;margin:auto;width:52px;height:52px;border-radius:50%;border:1px dashed #ffffff2a;pointer-events:none}
+  #joy-knob{
+    position:absolute;left:50%;top:50%;width:58px;height:58px;margin:-29px 0 0 -29px;border-radius:50%;
+    background:#ffffff2e;border:1px solid #ffffff55;backdrop-filter:blur(2px);touch-action:none;
+  }
+  #actions{
+    position:fixed;z-index:20;touch-action:none;
+    right:calc(16px + env(safe-area-inset-right));
+    bottom:calc(18px + env(safe-area-inset-bottom));
+    display:flex;flex-direction:column;align-items:flex-end;gap:12px;
+  }
+  #actions button{
+    border-radius:50%;border:1px solid #ffffff33;background:#ffffff14;color:#e8eef4;
+    font:inherit;font-size:14px;touch-action:none;
+  }
+  #btn-use{width:84px;height:84px;font-size:16px;background:#00d4aa26;border-color:#00d4aa66}
+  #btn-reset{width:60px;height:60px;font-size:13px}
+  #actions button.pressed{background:#00d4aa55;transform:scale(.94)}
+
+  /* ---- 竖屏提示 ---- */
+  #rotate-hint{
+    position:fixed;z-index:25;pointer-events:none;display:none;
+    left:50%;bottom:calc(10px + env(safe-area-inset-bottom));transform:translateX(-50%);
+    color:#9fb0bd;font-size:11px;background:#000a;border:1px solid #ffffff14;border-radius:999px;padding:4px 12px;
+  }
+  @media (orientation:portrait){#rotate-hint{display:block}}
+
+  /* ---- 桌面端：隐藏触控控件，仅键鼠 ---- */
+  @media (pointer:fine) and (hover:hover){#joy,#actions{display:none}}
+  @media (max-height:430px){
+    #joy{width:112px;height:112px}
+    #btn-use{width:72px;height:72px}
+    #btn-reset{width:54px;height:54px}
+  }
 </style>
 </head>
 <body>
-<video id="v" autoplay muted playsinline></video>
+<video id="v" autoplay muted playsinline disablepictureinpicture></video>
 
-<div id="hud">
-  <div class="row">
-    <span><span class="k">信令</span> <b id="ws">-</b></span>
-    <span><span class="k">ICE</span> <b id="ice">-</b></span>
-    <span><span class="k">DC</span> <b id="dc">-</b></span>
-    <span><span class="k">分辨率</span> <b id="res">-</b></span>
-    <span><span class="k">FPS</span> <b id="fps">-</b></span>
-    <span><span class="k">已解码帧</span> <b id="frames">-</b></span>
-    <span><span class="k">码率</span> <b id="kbps">-</b></span>
+<div id="topbar">
+  <div id="chips">
+    <span class="chip"><span class="dot" id="wsdot"></span><b id="ws">-</b></span>
   </div>
-  <div class="row">
-    <span><span class="k">位置</span> <b id="pos">-</b></span>
-    <span><span class="k">朝向</span> <b id="rot">-</b></span>
-    <span><span class="k">渲染帧</span> <b id="uframes">-</b></span>
-  </div>
-  <div class="row">
-    <span><span class="k">延迟</span> <b id="lat">-</b></span>
+  <div id="tools">
+    <button id="btn-full" aria-label="全屏" title="全屏">⛶</button>
+    <button id="btn-info" aria-label="调试信息" title="调试信息">☰</button>
   </div>
 </div>
-<div id="keys">WASD 移动 · 鼠标拖动/方向键转视角 · 空格 USE</div>
-<div id="log"></div>
+
+<div id="drawer" class="hidden">
+  <div id="grid">
+    <span class="k">ICE</span><b id="ice">-</b>
+    <span class="k">帧率</span><b id="fps">-</b>
+    <span class="k">分辨率</span><b id="res">-</b>
+    <span class="k">DataChannel</span><b id="dc">-</b>
+    <span class="k">码率</span><b id="kbps">-</b>
+    <span class="k">已解码帧</span><b id="frames">-</b>
+    <span class="k">延迟</span><b id="lat">-</b>
+    <span class="k">位置</span><b id="pos">-</b>
+    <span class="k">朝向</span><b id="rot">-</b>
+    <span class="k">渲染帧</span><b id="uframes">-</b>
+  </div>
+  <div id="keys">WASD 移动 · 鼠标拖动/方向键转视角 · 空格 USE</div>
+  <div id="log"></div>
+</div>
+
+<div id="joy" aria-label="移动摇杆"><div id="joy-knob"></div></div>
+<div id="actions">
+  <button id="btn-reset" aria-label="复位">复位</button>
+  <button id="btn-use" aria-label="使用">使用</button>
+</div>
+
+<div id="rotate-hint">↻ 横屏体验更佳</div>
 
 <script>
 const $ = id => document.getElementById(id);
@@ -55,7 +152,13 @@ function log(msg, cls='') {
   console.log('[MolinkTest]', msg);
 }
 
-const SIGNAL = (location.protocol === 'https:' ? 'wss://' : 'ws://') + location.hostname + ':8766/?room=gallery&role=browser';
+// 信令地址：HTTP 直连（局域网/公网 IP）走 8766 端口；HTTPS 入口（Tailscale Funnel 等反代）
+// 只放行 443/8443/10000，无法直连 8766，改走同源 /ws 路径由反代转发。
+// 房间名可用 URL 参数覆盖（?room=xxx）：公网场景下房间名即门牌，换随机串可挡陌生人。
+const ROOM = new URLSearchParams(location.search).get('room') || 'gallery';
+const SIGNAL = location.protocol === 'https:'
+  ? location.origin.replace(/^http/, 'ws') + '/ws/?room=' + ROOM + '&role=browser'
+  : 'ws://' + location.hostname + ':8766/?room=' + ROOM + '&role=browser';
 let ws, pc, dc;
 let lastStats = {framesDecoded:0, bytesReceived:0, ts:0};
 let lastUiFrames = 0;
@@ -69,22 +172,37 @@ function sendSignal(obj) {
 }
 
 function setText(id, v) { const e = $(id); if (e && e.textContent !== v) e.textContent = v; }
+function setWs(text, cls) {
+  setText('ws', text);
+  const d = $('wsdot');
+  if (d) d.className = 'dot ' + (cls || '');
+}
 
 function connectSignal() {
+  setWs('连接中', 'wait');
   log('连接信令 ' + SIGNAL);
   ws = new WebSocket(SIGNAL);
   ws.onopen = () => {
-    setText('ws', '已连接');
-    log('信令已连接', 'ok');
+    // 信令通了 ≠ 视频就绪：Unity 端没上线时 offer 没人应答，等 ontrack 再变绿。
+    setWs('等待推流', 'wait');
+    log('信令已连接，等待 Unity 推流端', 'ok');
     sendSignal({type:'hello', role:'browser'});
     startOffer();
   };
   ws.onmessage = onSignal;
-  ws.onclose = () => {
+  ws.onclose = ev => {
     stopControls();
+    clearTimeout(offerTimer);
     if (pc) { pc.close(); pc = null; }
-    setText('ws', '断开');
-    log('信令断开，2s 重连', 'warn');
+    // 4001=房间角色被占用（另一个控制页在线）、4002=缺角色参数。
+    // 这是确定性拒绝，无限重连只会刷屏——停下来给出明确指引。
+    if (ev && (ev.code === 4001 || ev.code === 4002)) {
+      setWs('房间占用', 'off');
+      log('信令拒绝(code ' + ev.code + '): ' + (ev.reason || '角色被占用') + '。关闭其他控制页后刷新重试', 'err');
+      return;
+    }
+    setWs('断开', 'off');
+    log('信令断开(code ' + (ev ? ev.code : '?') + ')，2s 重连', 'warn');
     setTimeout(connectSignal, 2000);
   };
   ws.onerror = () => log('信令错误', 'err');
@@ -105,14 +223,22 @@ function onSignal(ev) {
       .catch(e => log('addIceCandidate 失败: ' + e.message, 'err'));
   } else if (msg.type === 'peer_left') {
     stopControls();
+    setWs('等待推流', 'wait');
     log('对端已离线: ' + msg.role, 'warn');
   } else if (msg.type === 'peer') {
     log('对端加入: ' + msg.role);
+    // Unity 掉线重连后，信令会把 pending_offer 清空；主动重发一个新 offer 才能自愈。
+    if (msg.role === 'unity') startOffer();
   }
 }
 
 function createPeer() {
-  const cfg = {iceServers:[]};   // 纯局域网，无需 STUN
+  // 公网访问时浏览器需要 srflx（公网映射）候选才能打洞：加公共 STUN。
+  // 局域网场景多出的 srflx 候选不影响连通，host 候选仍然优先。
+  const cfg = {iceServers:[
+    {urls:'stun:stun.l.google.com:19302'},
+    {urls:'stun:stun1.l.google.com:19302'}
+  ]};
   pc = new RTCPeerConnection(cfg);
   answered = false;
 
@@ -129,6 +255,7 @@ function createPeer() {
     log('收到轨道 ' + e.track.kind, 'ok');
     $('v').srcObject = e.streams[0] || new MediaStream([e.track]);
     $('v').play().catch(err => log('play() 失败: ' + err.message, 'err'));
+    setWs('已连接', 'on');   // 视频轨道到手才算真正连上
   };
   pc.onicegatheringstatechange = () => log('ICE 收集: ' + pc.iceGatheringState);
 
@@ -147,6 +274,7 @@ function createPeer() {
 }
 
 async function startOffer() {
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;   // 信令断开时不再空转重建 pc
   try {
     stopControls();
     if (pc) { pc.close(); pc = null; }
@@ -169,9 +297,10 @@ const ctl = {lx:0, ly:0, rx:0, ry:0, use:false, reset:false};
 const keys = new Set();
 const sent = {lx:9, ly:9, rx:9, ry:9, use:null, reset:null};
 
-// ---- 鼠标拖动转视角 ----
-// 方向键走的是"速率"通道（Unity 每帧按速度积分），鼠标需要的是"位移"通道：
+// ---- 鼠标/触摸拖动转视角 ----
+// 方向键走的是"速率"通道（Unity 每帧按速度积分），拖动需要的是"位移"通道：
 // 拖了多少像素就转多少角度，所以单独累加像素增量随控制包一起发出。
+// 触屏的 pointer 事件与鼠标同构，天然复用这一通道。
 const mouseLook = {dragging:false, lastX:0, lastY:0, dx:0, dy:0, pointerId:null};
 const videoEl = document.getElementById('v');
 if (videoEl) {
@@ -208,10 +337,16 @@ if (videoEl) {
 }
 function sendControl() {
   if (!dc || dc.readyState !== 'open') return;
-  // mdx/mdy 是鼠标本次拖动的像素增量，Unity 按像素比例直接换算成角度。
+  // mdx/mdy 是本次拖动的像素增量，Unity 按像素比例直接换算成角度。
   dc.send(JSON.stringify({type:'control', lx:ctl.lx, ly:ctl.ly, rx:ctl.rx, ry:ctl.ry, use:ctl.use, reset:ctl.reset,
                          mdx:mouseLook.dx, mdy:mouseLook.dy}));
   mouseLook.dx = 0; mouseLook.dy = 0;
+}
+// 失焦/断线时把触控 UI 的视觉与状态一并复位。
+function resetTouchUi() {
+  joy.id = null;
+  if (joyKnob) joyKnob.style.transform = 'translate(0,0)';
+  document.querySelectorAll('#actions .pressed').forEach(el => el.classList.remove('pressed'));
 }
 function stopControls() {
   if (controlTimer) clearInterval(controlTimer);
@@ -220,9 +355,10 @@ function stopControls() {
   pingTimer = null;
   keys.clear();
   Object.assign(ctl, {lx:0,ly:0,rx:0,ry:0,use:false,reset:false});
-  // 失焦时清掉未发送的鼠标增量，避免回到页面时视角突然跳一大截。
+  // 失焦时清掉未发送的拖动增量，避免回到页面时视角突然跳一大截。
   mouseLook.dx = 0; mouseLook.dy = 0;
   mouseLook.dragging = false;
+  resetTouchUi();
   try { sendControl(); } catch {}
 }
 function startControlLoop() {
@@ -250,6 +386,112 @@ function refreshKeys() {
   ctl.rx = (keys.has('ArrowRight')?1:0) - (keys.has('ArrowLeft')?1:0);
   ctl.ry = (keys.has('ArrowUp')?1:0) - (keys.has('ArrowDown')?1:0);
 }
+
+// ---- 触控 UI：虚拟摇杆 + 动作按钮 ----
+const joyBase = $('joy');
+const joyKnob = $('joy-knob');
+const joy = {id:null, r:0, cx:0, cy:0};
+function buzz(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch {} }
+
+joyBase.addEventListener('pointerdown', e => {
+  if (joy.id !== null) return;
+  e.preventDefault();
+  const rect = joyBase.getBoundingClientRect();
+  joy.cx = rect.left + rect.width / 2;
+  joy.cy = rect.top + rect.height / 2;
+  joy.r = rect.width / 2 - joyKnob.offsetWidth / 2;
+  joy.id = e.pointerId;
+  try { joyBase.setPointerCapture(e.pointerId); } catch {}
+  joyMove(e);
+});
+joyBase.addEventListener('pointermove', joyMove);
+function joyMove(e) {
+  if (e.pointerId !== joy.id) return;
+  e.preventDefault();
+  let dx = e.clientX - joy.cx, dy = e.clientY - joy.cy;
+  const dist = Math.hypot(dx, dy);
+  if (dist > joy.r) { dx = dx / dist * joy.r; dy = dy / dist * joy.r; }
+  joyKnob.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+  // 死区线性重映射：中心附近不漂移，边缘保持满速。
+  let nx = dx / joy.r, ny = dy / joy.r;
+  const mag = Math.hypot(nx, ny);
+  const dead = 0.14;
+  if (mag < dead) { nx = 0; ny = 0; }
+  else {
+    const scaled = Math.min(1, (mag - dead) / (1 - dead));
+    nx = nx / mag * scaled; ny = ny / mag * scaled;
+  }
+  ctl.lx = +nx.toFixed(3);
+  ctl.ly = +(-ny).toFixed(3); // 屏幕向上 = 前进 = +ly
+}
+function joyEnd(e) {
+  if (e.pointerId !== joy.id) return;
+  joy.id = null;
+  joyKnob.style.transform = 'translate(0,0)';
+  ctl.lx = 0; ctl.ly = 0;
+  try { sendControl(); } catch {}
+}
+joyBase.addEventListener('pointerup', joyEnd);
+joyBase.addEventListener('pointercancel', joyEnd);
+
+// use/reset 都是按下沿触发（Unity 侧 Interact/ResetPressedThisFrame），
+// 所以"按住使用 / 点按复位"两种手势都成立。
+function bindHold(el, on, off) {
+  el.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    try { el.setPointerCapture(e.pointerId); } catch {}
+    el.classList.add('pressed');
+    buzz(15);
+    on();
+  });
+  const end = () => {
+    if (!el.classList.contains('pressed')) return;
+    el.classList.remove('pressed');
+    off();
+  };
+  el.addEventListener('pointerup', end);
+  el.addEventListener('pointercancel', end);
+}
+bindHold($('btn-use'),
+  () => { ctl.use = true; try { sendControl(); } catch {} },
+  () => { ctl.use = false; try { sendControl(); } catch {} });
+bindHold($('btn-reset'),
+  () => { ctl.reset = true; try { sendControl(); } catch {} },
+  () => { ctl.reset = false; try { sendControl(); } catch {} });
+
+// ---- 调试抽屉：开发者内容默认收起，按 ☰ 展开 ----
+$('btn-info').addEventListener('click', () => $('drawer').classList.toggle('hidden'));
+
+// ---- 全屏 ----
+function toggleFullscreen() {
+  try {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else if (videoEl && videoEl.webkitEnterFullscreen) {
+      videoEl.webkitEnterFullscreen(); // iOS Safari 仅支持视频元素全屏
+    }
+  } catch (e) {}
+}
+$('btn-full').addEventListener('click', toggleFullscreen);
+
+// ---- 防误触：长按菜单 / 双击缩放 ----
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('dblclick', e => e.preventDefault());
+
+// ---- 保持屏幕常亮（演示/巡展场景） ----
+let wakeLock = null;
+async function lockScreen() {
+  try {
+    if ('wakeLock' in navigator && document.visibilityState === 'visible') {
+      wakeLock = await navigator.wakeLock.request('screen');
+    }
+  } catch (e) {}
+}
+lockScreen();
+addEventListener('pointerdown', lockScreen, {once:true});
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') lockScreen(); });
 
 // ---- 统计 ----
 setInterval(async () => {
@@ -301,8 +543,6 @@ function startPingLoop() {
     }
   }, 1000);
 }
-// 在 startControlLoop 里已经会在 dc.onopen 时启动控制循环，这里也挂一个
-
 
 log('页面加载完成，准备连接');
 connectSignal();
