@@ -113,6 +113,23 @@ namespace GalleryRuntime
             }
         }
 
+        /// <summary>
+        /// Preset hotspot action entry: move the player to a pose and rebuild yaw/pitch.
+        /// Uses the same state-reset path as the reset button (CharacterController
+        /// disabled during the move, vertical velocity zeroed afterwards).
+        /// </summary>
+        public void TeleportTo(Vector3 position, float yawDeg, float pitchDeg)
+        {
+            _cc.enabled = false;
+            transform.SetPositionAndRotation(position, Quaternion.Euler(0f, yawDeg, 0f));
+            _cc.enabled = true;
+            _yaw = yawDeg;
+            _pitch = Mathf.Clamp(NormalizePitch(pitchDeg), minPitch, maxPitch);
+            if (viewTransform != null)
+                viewTransform.localRotation = Quaternion.Euler(_pitch, 0f, 0f);
+            _verticalVelocity = 0f;
+        }
+
         private static float NormalizePitch(float x)
         {
             return x > 180f ? x - 360f : x;
