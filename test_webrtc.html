@@ -95,6 +95,9 @@
 
   /* ---- 桌面端：隐藏触控控件，仅键鼠 ---- */
   @media (pointer:fine) and (hover:hover){#joy,#actions{display:none}}
+  /* 触屏设备或 ?ui=touch 强制时，覆盖上面的隐藏规则（JS 会给 body 加 touch 类） */
+  body.touch #joy{display:block}
+  body.touch #actions{display:flex}
   @media (max-height:430px){
     #joy{width:112px;height:112px}
     #btn-use{width:72px;height:72px}
@@ -386,6 +389,14 @@ function refreshKeys() {
   ctl.rx = (keys.has('ArrowRight')?1:0) - (keys.has('ArrowLeft')?1:0);
   ctl.ry = (keys.has('ArrowUp')?1:0) - (keys.has('ArrowDown')?1:0);
 }
+
+// ---- 触控 UI 显示判定 ----
+// 真实触屏设备（maxTouchPoints>0 或 pointer:coarse）显示摇杆/按钮，
+// 顺带修复触屏笔记本被 pointer:fine 媒体查询误隐藏的问题；
+// ?ui=touch 可在桌面浏览器强制显示，用于预览手机布局。
+const FORCE_TOUCH = new URLSearchParams(location.search).get('ui') === 'touch';
+const HAS_TOUCH = navigator.maxTouchPoints > 0 || matchMedia('(pointer: coarse)').matches;
+if (FORCE_TOUCH || HAS_TOUCH) document.body.classList.add('touch');
 
 // ---- 触控 UI：虚拟摇杆 + 动作按钮 ----
 const joyBase = $('joy');
