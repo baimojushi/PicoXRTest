@@ -2,12 +2,17 @@
   "globalBasePath": "Gallery/Splats/global/gallery_base_low.ply",
   "zones": [
     {
-      "enabled": false,
-      "id": "artwork_001_example",
+      "id": "artwork_001",
+      "enabled": true,
       "center": {
-        "x": 0.0,
-        "y": 1.5,
-        "z": 0.0
+        "x": 2.2052910327911377,
+        "y": 0.1902360776439309,
+        "z": -6.756592750549316
+      },
+      "boxSize": {
+        "x": 0.11750173568725586,
+        "y": 0.3758773487061262,
+        "z": 0.4642658233642578
       },
       "prefetchDistance": 6.0,
       "activateDistance": 4.0,
@@ -15,7 +20,532 @@
       "unloadDistance": 8.0,
       "lowPath": "",
       "highPath": "Gallery/Splats/zones/artwork_001/high.ply",
-      "note": "Disabled example. Crop a real artwork ROI from the full reference PLY and preserve scene coordinates."
+      "note": "SAM3 realphoto auto (score=0.77, from 00330.jpg). 足迹 0.51x0.53m, 法向|n·z|=0.19, 611 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_002",
+      "enabled": true,
+      "center": {
+        "x": -0.5227352976799011,
+        "y": 0.006847262382507324,
+        "z": -12.28803539276123
+      },
+      "boxSize": {
+        "x": 0.30045366287231445,
+        "y": 0.5421375632286072,
+        "z": 0.5251636505126953
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_002/high.ply",
+      "note": "SAM3 realphoto auto (score=0.76, from 00494.jpg). 足迹 1.92x0.42m, 法向|n·z|=0.00, 225 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_003",
+      "enabled": true,
+      "center": {
+        "x": 2.1767773628234863,
+        "y": 0.12072020769119263,
+        "z": -7.030858278274536
+      },
+      "boxSize": {
+        "x": 0.11661911010742188,
+        "y": 0.38899052143096924,
+        "z": 0.4559636116027832
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_003/high.ply",
+      "note": "SAM3 realphoto auto (score=0.79, from 00494.jpg). 足迹 0.55x0.59m, 法向|n·z|=0.19, 589 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_004",
+      "enabled": true,
+      "center": {
+        "x": 3.510628342628479,
+        "y": 0.1811676174402237,
+        "z": -5.001224756240845
+      },
+      "boxSize": {
+        "x": 0.23994803428649902,
+        "y": 0.6035850942134857,
+        "z": 0.8051342964172363
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_004/high.ply",
+      "note": "SAM3 realphoto auto (score=0.70, from 01246.jpg). 足迹 0.82x1.08m, 法向|n·z|=0.20, 390 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_005",
+      "enabled": true,
+      "center": {
+        "x": 1.5057698488235474,
+        "y": 0.48941470682621,
+        "z": -3.4814577102661133
+      },
+      "boxSize": {
+        "x": 0.21267223358154297,
+        "y": 0.3621194064617157,
+        "z": 0.587557315826416
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_005/high.ply",
+      "note": "SAM3 realphoto auto (score=0.79, from 01442.jpg). 足迹 0.46x0.66m, 法向|n·z|=0.17, 479 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_006",
+      "enabled": true,
+      "center": {
+        "x": 1.5425009727478027,
+        "y": -0.028608866035938263,
+        "z": -3.3836671113967896
+      },
+      "boxSize": {
+        "x": 0.25627779960632324,
+        "y": 0.4086278825998306,
+        "z": 0.7109763622283936
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_006/high.ply",
+      "note": "SAM3 realphoto auto (score=0.79, from 01442.jpg). 足迹 0.61x0.67m, 法向|n·z|=0.21, 473 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_007",
+      "enabled": true,
+      "center": {
+        "x": 3.5139814615249634,
+        "y": 0.38232526183128357,
+        "z": -4.847381353378296
+      },
+      "boxSize": {
+        "x": 0.38329243659973145,
+        "y": 1.6020193696022034,
+        "z": 1.5556654930114746
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_007/high.ply",
+      "note": "SAM3 realphoto auto (score=0.58, from 02192.jpg). 足迹 1.92x1.50m, 法向|n·z|=0.13, 1412 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_008",
+      "enabled": true,
+      "center": {
+        "x": 1.961544156074524,
+        "y": 0.11554913315922022,
+        "z": -12.063307285308838
+      },
+      "boxSize": {
+        "x": 0.0895841121673584,
+        "y": 0.291864363476634,
+        "z": 0.30750560760498047
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_008/high.ply",
+      "note": "SAM3 realphoto auto (score=0.57, from 02583.jpg). 足迹 0.39x0.27m, 法向|n·z|=0.13, 402 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_009",
+      "enabled": true,
+      "center": {
+        "x": 1.9532387256622314,
+        "y": 0.467979833483696,
+        "z": -12.064510345458984
+      },
+      "boxSize": {
+        "x": 0.07357549667358398,
+        "y": 0.2743968069553375,
+        "z": 0.36657142639160156
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_009/high.ply",
+      "note": "SAM3 realphoto auto (score=0.55, from 02583.jpg). 足迹 0.40x0.27m, 法向|n·z|=0.10, 365 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_010",
+      "enabled": true,
+      "center": {
+        "x": 2.0963568091392517,
+        "y": 0.477699413895607,
+        "z": -11.652781009674072
+      },
+      "boxSize": {
+        "x": 0.23218119144439697,
+        "y": 0.2777363955974579,
+        "z": 0.3999814987182617
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_010/high.ply",
+      "note": "SAM3 realphoto auto (score=0.62, from 02583.jpg). 足迹 0.40x0.30m, 法向|n·z|=0.19, 355 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_011",
+      "enabled": true,
+      "center": {
+        "x": 2.044747233390808,
+        "y": 0.11556917987763882,
+        "z": -11.643670558929443
+      },
+      "boxSize": {
+        "x": 0.11934018135070801,
+        "y": 0.299863088876009,
+        "z": 0.3870210647583008
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_011/high.ply",
+      "note": "SAM3 realphoto auto (score=0.62, from 02583.jpg). 足迹 0.41x0.31m, 法向|n·z|=0.01, 499 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_012",
+      "enabled": true,
+      "center": {
+        "x": 1.9802865386009216,
+        "y": 0.34164613112807274,
+        "z": -12.046010971069336
+      },
+      "boxSize": {
+        "x": 0.17228329181671143,
+        "y": 0.6047716215252876,
+        "z": 0.6824131011962891
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_012/high.ply",
+      "note": "SAM3 realphoto auto (score=0.58, from 03083.jpg). 足迹 0.90x0.68m, 法向|n·z|=0.14, 1705 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_013",
+      "enabled": true,
+      "center": {
+        "x": 1.9938740134239197,
+        "y": -0.19555366784334183,
+        "z": -11.956437110900879
+      },
+      "boxSize": {
+        "x": 0.1397019624710083,
+        "y": 0.16221849620342255,
+        "z": 0.40087890625
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_013/high.ply",
+      "note": "SAM3 realphoto auto (score=0.55, from 03083.jpg). 足迹 0.33x0.59m, 法向|n·z|=0.16, 259 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_014",
+      "enabled": true,
+      "center": {
+        "x": -6.945234298706055,
+        "y": 0.17483557295054197,
+        "z": -12.962569236755371
+      },
+      "boxSize": {
+        "x": 0.17484569549560547,
+        "y": 0.3947857413440943,
+        "z": 0.6198902130126953
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_014/high.ply",
+      "note": "SAM3 realphoto auto (score=0.81, from 03456.jpg). 足迹 0.66x0.66m, 法向|n·z|=0.20, 239 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_015",
+      "enabled": true,
+      "center": {
+        "x": -3.581069827079773,
+        "y": 0.1725785732269287,
+        "z": -15.705811977386475
+      },
+      "boxSize": {
+        "x": 0.7356984615325928,
+        "y": 2.016374111175537,
+        "z": 2.9392709732055664
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_015/high.ply",
+      "note": "SAM3 realphoto auto (score=0.89, from 03456.jpg). 足迹 4.59x3.41m, 法向|n·z|=0.21, 3329 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_016",
+      "enabled": true,
+      "center": {
+        "x": -6.574336767196655,
+        "y": 0.16564752161502838,
+        "z": -11.514034748077393
+      },
+      "boxSize": {
+        "x": 0.30104970932006836,
+        "y": 0.9269736707210541,
+        "z": 0.7584047317504883
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_016/high.ply",
+      "note": "SAM3 realphoto auto (score=0.70, from 04683.jpg). 足迹 1.25x1.85m, 法向|n·z|=0.35, 1133 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_017",
+      "enabled": true,
+      "center": {
+        "x": -6.484519958496094,
+        "y": 0.2561556249856949,
+        "z": -11.241609573364258
+      },
+      "boxSize": {
+        "x": 0.35645008087158203,
+        "y": 1.283687800168991,
+        "z": 0.9552116394042969
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_017/high.ply",
+      "note": "SAM3 realphoto auto (score=0.78, from 05144.jpg). 足迹 1.84x1.33m, 法向|n·z|=0.30, 2345 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_018",
+      "enabled": true,
+      "center": {
+        "x": 2.19337260723114,
+        "y": 0.13940778374671936,
+        "z": -6.939204931259155
+      },
+      "boxSize": {
+        "x": 0.23723578453063965,
+        "y": 1.3970049023628235,
+        "z": 0.9760222434997559
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_018/high.ply",
+      "note": "SAM3 realphoto auto (score=0.69, from 06423.jpg). 足迹 2.00x1.88m, 法向|n·z|=0.18, 3832 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_019",
+      "enabled": true,
+      "center": {
+        "x": -6.156063795089722,
+        "y": 0.2547496035695076,
+        "z": -9.996320724487305
+      },
+      "boxSize": {
+        "x": 0.30524110794067383,
+        "y": 0.7226044982671738,
+        "z": 0.8947162628173828
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_019/high.ply",
+      "note": "SAM3 realphoto auto (score=0.83, from 07416.jpg). 足迹 0.95x1.07m, 法向|n·z|=0.24, 535 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_020",
+      "enabled": true,
+      "center": {
+        "x": -3.389558792114258,
+        "y": -0.02818046510219574,
+        "z": -14.704797267913818
+      },
+      "boxSize": {
+        "x": 0.20155048370361328,
+        "y": 0.4368978440761566,
+        "z": 0.6937894821166992
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_020/high.ply",
+      "note": "SAM3 realphoto auto (score=0.75, from 07636.jpg). 足迹 0.55x0.34m, 法向|n·z|=0.23, 681 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_021",
+      "enabled": true,
+      "center": {
+        "x": 2.6590816974639893,
+        "y": 0.1821591779589653,
+        "z": -8.29329776763916
+      },
+      "boxSize": {
+        "x": 0.37723207473754883,
+        "y": 0.6662233024835587,
+        "z": 0.6364402770996094
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_021/high.ply",
+      "note": "SAM3 realphoto auto (score=0.90, from 07865.jpg). 足迹 1.16x1.36m, 法向|n·z|=0.37, 237 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_022",
+      "enabled": true,
+      "center": {
+        "x": -5.6183106899261475,
+        "y": 0.25941590033471584,
+        "z": -5.487165212631226
+      },
+      "boxSize": {
+        "x": 0.10782003402709961,
+        "y": 0.5345210321247578,
+        "z": 0.2547297477722168
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_022/high.ply",
+      "note": "SAM3 realphoto auto (score=0.88, from 08461.jpg). 足迹 2.34x0.41m, 法向|n·z|=0.14, 228 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_023",
+      "enabled": true,
+      "center": {
+        "x": -6.228856801986694,
+        "y": 0.2732894569635391,
+        "z": -10.280385494232178
+      },
+      "boxSize": {
+        "x": 0.2227625846862793,
+        "y": 0.6222752034664154,
+        "z": 0.7226247787475586
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_023/high.ply",
+      "note": "SAM3 realphoto auto (score=0.86, from 08461.jpg). 足迹 0.88x0.98m, 法向|n·z|=0.21, 493 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_024",
+      "enabled": true,
+      "center": {
+        "x": -5.445058584213257,
+        "y": -0.12398052215576172,
+        "z": -4.654870510101318
+      },
+      "boxSize": {
+        "x": 0.6117348670959473,
+        "y": 2.521726131439209,
+        "z": 2.250636100769043
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_024/high.ply",
+      "note": "SAM3 realphoto auto (score=0.89, from 09451.jpg). 足迹 4.24x2.96m, 法向|n·z|=0.13, 9975 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_025",
+      "enabled": true,
+      "center": {
+        "x": -5.286156892776489,
+        "y": -0.13931462168693542,
+        "z": -3.533147692680359
+      },
+      "boxSize": {
+        "x": 0.38599157333374023,
+        "y": 1.6368159651756287,
+        "z": 1.5518553256988525
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_025/high.ply",
+      "note": "SAM3 realphoto auto (score=0.91, from 09598.jpg). 足迹 2.45x2.02m, 法向|n·z|=0.21, 6260 点. Verify in Unity."
+    },
+    {
+      "id": "artwork_026",
+      "enabled": true,
+      "center": {
+        "x": 3.4413938522338867,
+        "y": 0.25696158362552524,
+        "z": -5.324631452560425
+      },
+      "boxSize": {
+        "x": 0.1915140151977539,
+        "y": 0.5421794662252069,
+        "z": 0.6367287635803223
+      },
+      "prefetchDistance": 6.0,
+      "activateDistance": 4.0,
+      "deactivateDistance": 6.0,
+      "unloadDistance": 8.0,
+      "lowPath": "",
+      "highPath": "Gallery/Splats/zones/artwork_026/high.ply",
+      "note": "SAM3 realphoto auto (score=0.56, from 10372.jpg). 足迹 0.74x1.01m, 法向|n·z|=0.19, 596 点. Verify in Unity."
     }
   ]
 }
