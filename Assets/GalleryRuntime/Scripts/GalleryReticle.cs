@@ -1,0 +1,135 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace GalleryRuntime
+{
+    /// <summary>
+    /// Aim feedback for hotspot interaction: a dot in the centre of the view that
+    /// changes colour/size when a hotspot is aimed at (focus) or open (active),
+    /// plus an optional hint line. Built at runtime with UGUI — no prefab needed.
+    /// </summary>
+    [DisallowMultipleComponent]
+    public sealed class GalleryReticle : MonoBehaviour
+    {
+        [Tooltip("留空则自动查找场景中的 GalleryInteractor")]
+        public GalleryInteractor interactor;
+
+        [Tooltip("留空则自动解析系统中文字体")]
+        public Font font;
+
+        [Header("Dot")]
+        public Color idleColor = new Color(1f, 1f, 1f, 0.28f);
+        public Color focusColor = new Color(0.25f, 1f, 0.65f, 0.95f);
+        public Color activeColor = new Color(1f, 0.78f, 0.25f, 1f);
+        [Min(2f)] public float dotSize = 10f;
+        [Range(1f, 4f)] public float focusScale = 1.9f;
+
+        [Header("Hint")]
+        public string focusHint = "按「使用」查看作品信息";
+        [Range(8, 48)] public int hintFontSize = 20;
+        public Color hintColor = new Color(1f, 1f, 1f, 0.9f);
+
+        private Image _dot;
+        private Text _hint;
+
+        private void Start()
+        {
+            Build();
+        }
+
+        private void Update()
+        {
+            if (_dot == null)
+                return;
+
+            var target = interactor != null ? interactor : (interactor = FindFirstObjectByType<GalleryInteractor>());
+            bool active = target != null && target.Active != null;
+            bool focused = target != null && target.Focused != null;
+
+            _dot.color = active ? activeColor : focused ? focusColor : idleColor;
+            _dot.rectTransform.localScale = Vector3.one * (focused || active ? focusScale : 1f);
+
+            bool showHint = (focused && !active) || active;
+            if (_hint != null)
+            {
+                _hint.gameObject.SetActive(showHint);
+                if (focused && !active)
+                    _hint.text = focusHint;
+                else if (active)
+                    _hint.text = "再按「使用」关闭";
+            }
+        }
+
+        private void Build()
+        {
+            var canvasGo = new GameObject("ReticleCanvas", typeof(RectTransform));
+            canvasGo.transform.SetParent(transform, false);
+
+            var canvas = canvasGo.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 100;
+
+            var dotGo = new GameObject("Dot", typeof(RectTransform));
+            var dotRt = (RectTransform)dotGo.transform;
+            dotRt.SetParent(canvasGo.transform, false);
+            dotRt.anchorMin = new Vector2(0.5f, 0.5f);
+            dotRt.anchorMax = new Vector2(0.5f, 0.5f);
+            dotRt.pivot = new Vector2(0.5f, 0.5f);
+            dotRt.anchoredPosition = Vector2.zero;
+            dotRt.sizeDelta = new Vector2(dotSize, dotSize);
+
+            _dot = dotGo.AddComponent<Image>();
+            _dot.sprite = CreateDotSprite();
+            _dot.color = idleColor;
+            _dot.raycastTarget = false;
+
+            var hintGo = new GameObject("Hint", typeof(RectTransform));
+            var hintRt = (RectTransform)hintGo.transform;
+            hintRt.SetParent(canvasGo.transform, false);
+            hintRt.anchorMin = new Vector2(0.5f, 0.5f);
+            hintRt.anchorMax = new Vector2(0.5f, 0.5f);
+            hintRt.pivot = new Vector2(0.5f, 1f);
+            hintRt.anchoredPosition = new Vector2(0f, -34f);
+            hintRt.sizeDelta = new Vector2(420f, 40f);
+
+            _hint = hintGo.AddComponent<Text>();
+            _hint.font = GalleryUiFont.Resolve(font);
+            _hint.fontSize = hintFontSize;
+            _hint.alignment = TextAnchor.UpperCenter;
+            _hint.color = hintColor;
+            _hint.raycastTarget = false;
+            _hint.horizontalOverflow = HorizontalWrapMode.Overflow;
+            _hint.verticalOverflow = VerticalWrapMode.Overflow;
+            _hint.gameObject.SetActive(false);
+        }
+
+        private static Sprite CreateDotSprite()
+        {
+            const int size = 64;
+            var tex = new Texture2D(size, size, TextureFormat.RGBA32, false)
+            {
+                wrapMode = TextureWrapMode.Clamp,
+                filterMode = FilterMode.Bilinear
+            };
+
+            var pixels = new Color32[size * size];
+            float radius = size * 0.5f;
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    float dx = x + 0.5f - radius;
+                    float dy = y + 0.5f - radius;
+                    float d = Mathf.Sqrt(dx * dx + dy * dy) / radius;
+                    float a = Mathf.Clamp01(1f - d);
+                    a *= a;
+                    pixels[y * size + x] = new Color32(255, 255, 255, (byte)(a * 255f));
+                }
+            }
+
+            tex.SetPixels32(pixels);
+            tex.Apply();
+            return Sprite.Create(tex, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), 100f);
+        }
+    }
+}

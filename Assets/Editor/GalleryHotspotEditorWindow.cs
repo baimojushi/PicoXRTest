@@ -1,23 +1,38 @@
 ﻿namespace GalleryEditor
 {
     using System.Collections.Generic;
+    using System.IO;
+    using System.Text;
     using GalleryRuntime;
     using UnityEditor;
+    using UnityEditor.Events;
     using UnityEngine;
+    using UnityEngine.Events;
 
     /// <summary>
-    /// Gallery hotspot zone editor. A box acts as the hotspot trigger collider:
+    /// Gallery hotspot editor. A box acts as the hotspot trigger collider:
     /// it does NOT contain splat data — Gaussians live in pre-sliced PLY files.
-    /// The player "USE" ray (GalleryInteractor, 3 m) hitting the box calls
-    /// GalleryHotspot.Activate(), which fires the onActivate event bound in the Inspector.
+    ///
+    /// Interaction chain:
+    ///   aim  -> GalleryInteractor focuses the box (GalleryReticle shows feedback)
+    ///   USE  -> GalleryHotspot.Activate() (toggle) -> onActivate / onDeactivate events
+    ///
+    /// The "从 zones.json 批量生成" button turns the artwork-recognition pipeline
+    /// output (zones.json: id + center + boxSize) into ready-to-use hotspots whose
+    /// onActivate is already wired to GalleryHotspotInfoCard.
     /// </summary>
     public class GalleryHotspotEditorWindow : EditorWindow
     {
+        private const string AutoRootName = "Hotspots_Auto";
+        private const string InteractionRootName = "GalleryInteraction";
+        private const string ZonesRelativePath = "Gallery/Config/zones.json";
+        private const string ArtworksRelativePath = "Gallery/Config/artworks.json";
+
         [MenuItem("Tools/Gallery 热点编辑器")]
         public static void Open()
         {
             var window = GetWindow<GalleryHotspotEditorWindow>("Gallery 热点");
-            window.minSize = new Vector2(380f, 440f);
+            window.minSize = new Vector2(380f, 520f);
         }
 
         private Vector2 scrollPos;
@@ -26,7 +41,7 @@
         {
             EditorGUILayout.HelpBox(
                 "方体 = 热点碰撞体（BoxCollider IsTrigger），不包含高斯数据——高斯在预切片的 PLY 文件里。\n" +
-                "玩家按「使用」时从视角射出 3 米射线，打中方体即触发 onActivate 事件（在 Inspector 绑定）。\n" +
+                "交互：玩家视线瞄准方体聚焦（准星变色）→ 按「使用」激活/再按关闭 → 触发 onActivate / onDeactivate。\n" +
                 "放置技巧：Scene 视图对着挂画看一眼 → 点「新建：放在视线落点」，方体贴着表面生成，再微调大小。\n" +
                 "注意：方体不要包住玩家站位，否则射线从内部打不中自身碰撞体。", MessageType.Info);
 
@@ -36,13 +51,29 @@
                 if (GUILayout.Button("新建：放在场景原点")) CreateHotspot(Vector3.zero, Quaternion.identity);
             }
 
-            GUILayout.Space(8);
+            GUILayout.Space(10);
+            EditorGUILayout.LabelField("自动化 / 内容", EditorStyles.boldLabel);
+            EditorGUILayout.HelpBox(
+                "挂画识别管线输出的 zones.json 已含 26 个 zone 的 id / center / boxSize。\n" +
+                "「批量生成」把它们变成可用热点（已自动绑定信息卡动作）；「填充内容」用 artworks.json 补标题/简介。",
+                MessageType.None);
+
+            if (GUILayout.Button("从 zones.json 批量生成热点（自动绑定信息卡）")) CreateFromZonesManifest();
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (GUILayout.Button("生成/更新 artworks.json 模板")) WriteArtworksTemplate();
+                if (GUILayout.Button("从 artworks.json 填充内容")) FillFromArtworks();
+            }
+
+            if (GUILayout.Button("在场景中装备准星 + 内容目录")) SetupInteractionRig();
+
+            GUILayout.Space(10);
             EditorGUILayout.LabelField("场景中的热点", EditorStyles.boldLabel);
 
             var spots = FindObjectsByType<GalleryHotspot>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             if (spots.Length == 0)
             {
-                EditorGUILayout.HelpBox("场景中还没有热点，点上面的「新建」开始。", MessageType.None);
+                EditorGUILayout.HelpBox("场景中还没有热点，点上面的「新建」或「批量生成」开始。", MessageType.None);
             }
             else
             {
@@ -65,7 +96,7 @@
                     if (GUILayout.Button("定位", GUILayout.Width(44)))
                     {
                         Selection.activeGameObject = spot.gameObject;
-                        SceneView.lastSceneView?.FrameSelected();
+                        SceneView.lastActiveSceneView?.FrameSelected();
                     }
 
                     if (GUILayout.Button("删除", GUILayout.Width(44)))
@@ -123,6 +154,11 @@
                         $"{collider.size.ToString("F1")} @ {spot.transform.position.ToString("F1")}",
                         EditorStyles.miniLabel);
                 }
+
+                bool hasCard = spot.GetComponent<GalleryHotspotInfoCard>() != null;
+                EditorGUILayout.LabelField(
+                    $"标题：{(string.IsNullOrWhiteSpace(spot.title) ? "(未录入)" : spot.title)}  信息卡：{(hasCard ? "已绑" : "无")}",
+                    EditorStyles.miniLabel);
             }
         }
 
@@ -131,7 +167,7 @@
             var point = Vector3.zero;
             var rotation = Quaternion.identity;
 
-            var view = SceneView.lastSceneView;
+            var view = SceneView.lastActiveSceneView;
             if (view != null && view.camera != null)
             {
                 var cam = view.camera.transform;
@@ -170,7 +206,7 @@
                 rotation);
 
             Selection.activeGameObject = go;
-            SceneView.lastSceneView?.FrameSelected();
+            SceneView.lastActiveSceneView?.FrameSelected();
         }
 
         private static string NextFreeId()
@@ -189,11 +225,236 @@
             return $"hotspot_{max + 1:000}";
         }
 
+        // ---------- zones.json -> hotspots ----------
+
+        private void CreateFromZonesManifest()
+        {
+            string path = StreamingPath(ZonesRelativePath);
+            if (!File.Exists(path))
+            {
+                EditorUtility.DisplayDialog("找不到 zones.json", path, "好");
+                return;
+            }
+
+            SplatZoneManifest manifest;
+            try
+            {
+                manifest = JsonUtility.FromJson<SplatZoneManifest>(File.ReadAllText(path, Encoding.UTF8));
+            }
+            catch (System.Exception e)
+            {
+                EditorUtility.DisplayDialog("zones.json 解析失败", e.Message, "好");
+                return;
+            }
+
+            if (manifest?.zones == null || manifest.zones.Length == 0)
+            {
+                EditorUtility.DisplayDialog("zones.json 里没有 zone", path, "好");
+                return;
+            }
+
+            var existing = new HashSet<string>();
+            foreach (var s in FindObjectsByType<GalleryHotspot>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (!string.IsNullOrEmpty(s.hotspotId)) existing.Add(s.hotspotId);
+            }
+
+            var root = GameObject.Find(AutoRootName);
+            if (root == null)
+            {
+                root = new GameObject(AutoRootName);
+                Undo.RegisterCreatedObjectUndo(root, "Create Hotspots Root");
+            }
+
+            int created = 0, skipped = 0;
+            foreach (var zone in manifest.zones)
+            {
+                if (zone == null || string.IsNullOrWhiteSpace(zone.id)) continue;
+                if (existing.Contains(zone.id)) { skipped++; continue; }
+
+                var center = zone.center.ToVector3();
+                // JsonVec3 是结构体：字段缺失时会保留全零默认值，据此判断"未提供尺寸"
+                var size = zone.boxSize.ToVector3();
+                if (size == Vector3.zero) size = new Vector3(0.6f, 0.6f, 0.4f);
+                size = new Vector3(
+                    Mathf.Max(0.12f, size.x), Mathf.Max(0.12f, size.y), Mathf.Max(0.12f, size.z));
+
+                var go = new GameObject($"Hotspot_{zone.id}");
+                Undo.RegisterCreatedObjectUndo(go, "Create Gallery Hotspot");
+                go.transform.SetParent(root.transform, true);
+                // zones.json 的 boxSize 是世界轴对齐包围盒，因此方体保持单位旋转
+                go.transform.SetPositionAndRotation(center, Quaternion.identity);
+
+                var collider = go.AddComponent<BoxCollider>();
+                collider.isTrigger = true;
+                collider.size = size;
+
+                var spot = go.AddComponent<GalleryHotspot>();
+                spot.hotspotId = zone.id;
+
+                var card = go.AddComponent<GalleryHotspotInfoCard>();
+                card.hotspot = spot;
+                UnityEventTools.AddPersistentListener(spot.onActivate, new UnityAction(card.Show));
+                UnityEventTools.AddPersistentListener(spot.onDeactivate, new UnityAction(card.Hide));
+
+                EditorUtility.SetDirty(spot);
+                EditorUtility.SetDirty(card);
+                created++;
+            }
+
+            AssetDatabase.SaveAssets();
+            Debug.Log($"[Gallery 热点] 从 zones.json 生成 {created} 个热点（已存在跳过 {skipped} 个）");
+            EditorUtility.DisplayDialog(
+                "完成",
+                $"生成 {created} 个热点，跳过已存在 {skipped} 个。\n下一步可点「生成/更新 artworks.json 模板」再录入标题。",
+                "好");
+        }
+
+        // ---------- artworks.json ----------
+
+        private void WriteArtworksTemplate()
+        {
+            string zonesPath = StreamingPath(ZonesRelativePath);
+            if (!File.Exists(zonesPath))
+            {
+                EditorUtility.DisplayDialog("找不到 zones.json", zonesPath, "好");
+                return;
+            }
+
+            var zones = JsonUtility.FromJson<SplatZoneManifest>(File.ReadAllText(zonesPath, Encoding.UTF8));
+            if (zones?.zones == null || zones.zones.Length == 0)
+            {
+                EditorUtility.DisplayDialog("zones.json 里没有 zone", zonesPath, "好");
+                return;
+            }
+
+            // 保留已录入的内容，只补齐缺失的 id，避免覆盖用户填写的标题
+            var merged = new Dictionary<string, GalleryArtworkInfo>();
+            string artworksPath = StreamingPath(ArtworksRelativePath);
+            if (File.Exists(artworksPath))
+            {
+                var existing = JsonUtility.FromJson<GalleryArtworkManifest>(
+                    File.ReadAllText(artworksPath, Encoding.UTF8));
+                if (existing?.artworks != null)
+                {
+                    foreach (var a in existing.artworks)
+                    {
+                        if (a != null && !string.IsNullOrEmpty(a.id)) merged[a.id] = a;
+                    }
+                }
+            }
+
+            var list = new List<GalleryArtworkInfo>();
+            int added = 0;
+            foreach (var zone in zones.zones)
+            {
+                if (zone == null || string.IsNullOrWhiteSpace(zone.id)) continue;
+                if (merged.TryGetValue(zone.id, out var info))
+                {
+                    list.Add(info);
+                }
+                else
+                {
+                    list.Add(new GalleryArtworkInfo { id = zone.id });
+                    added++;
+                }
+            }
+
+            var manifest = new GalleryArtworkManifest { artworks = list.ToArray() };
+            File.WriteAllText(artworksPath, JsonUtility.ToJson(manifest, true), new UTF8Encoding(false));
+            AssetDatabase.Refresh();
+
+            string absolute = Path.GetFullPath(artworksPath);
+            Debug.Log($"[Gallery 热点] artworks.json 模板已写入（新增 {added} 条）：{absolute}");
+            EditorUtility.DisplayDialog(
+                "完成",
+                $"已写入 {list.Count} 条（新增 {added} 条，保留已有内容）。\n\n{absolute}\n\n打开它填写 title / artist / year / description 后，回此窗口点「从 artworks.json 填充内容」。",
+                "好");
+        }
+
+        private void FillFromArtworks()
+        {
+            string path = StreamingPath(ArtworksRelativePath);
+            if (!File.Exists(path))
+            {
+                EditorUtility.DisplayDialog("找不到 artworks.json", "先点「生成/更新 artworks.json 模板」。\n" + path, "好");
+                return;
+            }
+
+            var manifest = JsonUtility.FromJson<GalleryArtworkManifest>(File.ReadAllText(path, Encoding.UTF8));
+            var map = new Dictionary<string, GalleryArtworkInfo>();
+            if (manifest?.artworks != null)
+            {
+                foreach (var a in manifest.artworks)
+                {
+                    if (a != null && !string.IsNullOrEmpty(a.id)) map[a.id] = a;
+                }
+            }
+
+            int applied = 0;
+            foreach (var spot in FindObjectsByType<GalleryHotspot>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (string.IsNullOrEmpty(spot.hotspotId) || !map.TryGetValue(spot.hotspotId, out var info))
+                    continue;
+
+                Undo.RecordObject(spot, "Fill Hotspot Content");
+                if (string.IsNullOrWhiteSpace(spot.title)) spot.title = info.title;
+                if (string.IsNullOrWhiteSpace(spot.artist)) spot.artist = info.artist;
+                if (string.IsNullOrWhiteSpace(spot.year)) spot.year = info.year;
+                if (string.IsNullOrWhiteSpace(spot.description)) spot.description = info.description;
+                EditorUtility.SetDirty(spot);
+                applied++;
+            }
+
+            AssetDatabase.SaveAssets();
+            Debug.Log($"[Gallery 热点] 内容填充 {applied} 个热点");
+            EditorUtility.DisplayDialog("完成", $"已填充 {applied} 个热点（只补空缺字段）。", "好");
+        }
+
+        // ---------- runtime rig ----------
+
+        private void SetupInteractionRig()
+        {
+            var go = GameObject.Find(InteractionRootName);
+            if (go == null)
+            {
+                go = new GameObject(InteractionRootName);
+                Undo.RegisterCreatedObjectUndo(go, "Create Gallery Interaction Rig");
+            }
+
+            var reticle = go.GetComponent<GalleryReticle>();
+            if (reticle == null) reticle = Undo.AddComponent<GalleryReticle>(go);
+
+            var catalog = go.GetComponent<GalleryArtworkCatalog>();
+            if (catalog == null) catalog = Undo.AddComponent<GalleryArtworkCatalog>(go);
+
+            var interactor = FindFirstObjectByType<GalleryInteractor>(FindObjectsInactive.Include);
+            if (interactor != null)
+            {
+                reticle.interactor = interactor;
+                EditorUtility.SetDirty(reticle);
+            }
+            else
+            {
+                Debug.LogWarning("[Gallery 热点] 场景里没找到 GalleryInteractor；准星会自动查找，但建议显式指定");
+            }
+
+            Selection.activeGameObject = go;
+            Debug.Log($"[Gallery 热点] 交互装备就绪：{InteractionRootName}（准星 + 内容目录），interactor={(interactor != null ? interactor.name : "未指定")}");
+        }
+
+        private static string StreamingPath(string relative)
+        {
+            var normalized = relative.Replace('/', Path.DirectorySeparatorChar);
+            return Path.Combine(Application.streamingAssetsPath, normalized);
+        }
+
         private void DrawIssueReport(GalleryHotspot[] spots)
         {
             var issues = new List<string>();
             var idCounts = new Dictionary<string, int>();
             var player = FindFirstObjectByType<GalleryPlayerController>(FindObjectsInactive.Include);
+            int missingTitle = 0;
 
             foreach (var spot in spots)
             {
@@ -206,6 +467,8 @@
                     idCounts.TryGetValue(spot.hotspotId, out int count);
                     idCounts[spot.hotspotId] = count + 1;
                 }
+
+                if (string.IsNullOrWhiteSpace(spot.title)) missingTitle++;
 
                 var collider = spot.GetComponent<BoxCollider>();
                 if (collider == null)
@@ -225,6 +488,14 @@
             foreach (var pair in idCounts)
             {
                 if (pair.Value > 1) issues.Add($"hotspotId「{pair.Key}」重复 {pair.Value} 个");
+            }
+
+            if (missingTitle > 0)
+            {
+                EditorGUILayout.HelpBox(
+                    $"{missingTitle} 个热点尚未录入标题（激活时会显示 hotspotId）。" +
+                    "点「生成/更新 artworks.json 模板」填写后再「从 artworks.json 填充内容」。",
+                    MessageType.None);
             }
 
             if (issues.Count == 0)

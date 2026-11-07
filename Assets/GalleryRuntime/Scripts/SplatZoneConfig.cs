@@ -19,6 +19,8 @@ namespace GalleryRuntime
         public bool enabled = true;
         public string id;
         public JsonVec3 center;
+        /// <summary>热点方体尺寸（轴对齐，米）。由挂画识别管线写入；留空则编辑器用默认尺寸。</summary>
+        public JsonVec3 boxSize;
         public float prefetchDistance = 6f;
         public float activateDistance = 4f;
         public float deactivateDistance = 6f;
