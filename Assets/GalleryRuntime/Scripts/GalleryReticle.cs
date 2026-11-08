@@ -18,10 +18,8 @@ namespace GalleryRuntime
         public Font font;
 
         [Header("Dot")]
-        public Color idleColor = new Color(1f, 1f, 1f, 0.75f);
         public Color focusColor = new Color(0.25f, 1f, 0.65f, 0.95f);
         public Color activeColor = new Color(1f, 0.78f, 0.25f, 1f);
-        [Min(2f)] public float dotSize = 16f;
         [Range(1f, 4f)] public float focusScale = 1.9f;
 
         [Header("Hint")]
@@ -32,6 +30,8 @@ namespace GalleryRuntime
         private Image _dot;
         private Text _hint;
         private Canvas _canvas;
+        private bool _logged;
+        private bool _wasFocused;
 
         private void Start()
         {
@@ -52,8 +52,22 @@ namespace GalleryRuntime
             bool active = target != null && target.Active != null;
             bool focused = target != null && target.Focused != null;
 
-            _dot.color = active ? activeColor : focused ? focusColor : idleColor;
+            _dot.color = active ? activeColor : focused ? focusColor : new Color(1f, 1f, 1f, 0.75f);
             _dot.rectTransform.localScale = Vector3.one * (focused || active ? focusScale : 1f);
+
+            if (!_logged)
+            {
+                _logged = true;
+                Debug.Log($"[GalleryReticle] canvas={_canvas.renderMode} camera={(_canvas.worldCamera != null ? _canvas.worldCamera.name : "NULL")} " +
+                          $"plane={_canvas.planeDistance} dot={_dot.rectTransform.sizeDelta} alpha={_dot.color.a} " +
+                          $"dotActive={_dot.gameObject.activeInHierarchy} interactor={(target != null ? target.name : "NULL")}");
+            }
+
+            if (focused != _wasFocused)
+            {
+                _wasFocused = focused;
+                Debug.Log($"[GalleryReticle] focus={(focused && target.Focused != null ? target.Focused.hotspotId : "none")}");
+            }
 
             bool showHint = (focused && !active) || active;
             if (_hint != null)
@@ -89,11 +103,13 @@ namespace GalleryRuntime
             dotRt.anchorMax = new Vector2(0.5f, 0.5f);
             dotRt.pivot = new Vector2(0.5f, 0.5f);
             dotRt.anchoredPosition = Vector2.zero;
-            dotRt.sizeDelta = new Vector2(dotSize, dotSize);
+            dotRt.sizeDelta = new Vector2(16f, 16f);
 
             _dot = dotGo.AddComponent<Image>();
             _dot.sprite = CreateDotSprite();
-            _dot.color = idleColor;
+            // 场景序列化里的 dotSize=10 / alpha=0.28 会覆盖代码默认值，
+            // 白点在白墙上等于隐形，这里强制覆盖为可见值。
+            _dot.color = new Color(1f, 1f, 1f, 0.75f);
 
             // Gallery walls are white, so a translucent white dot would be invisible.
             // A dark outline keeps the dot readable on any background.
