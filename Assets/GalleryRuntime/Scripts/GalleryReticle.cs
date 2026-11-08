@@ -18,10 +18,10 @@ namespace GalleryRuntime
         public Font font;
 
         [Header("Dot")]
-        public Color idleColor = new Color(1f, 1f, 1f, 0.28f);
+        public Color idleColor = new Color(1f, 1f, 1f, 0.75f);
         public Color focusColor = new Color(0.25f, 1f, 0.65f, 0.95f);
         public Color activeColor = new Color(1f, 0.78f, 0.25f, 1f);
-        [Min(2f)] public float dotSize = 10f;
+        [Min(2f)] public float dotSize = 16f;
         [Range(1f, 4f)] public float focusScale = 1.9f;
 
         [Header("Hint")]
@@ -31,6 +31,7 @@ namespace GalleryRuntime
 
         private Image _dot;
         private Text _hint;
+        private Canvas _canvas;
 
         private void Start()
         {
@@ -41,6 +42,11 @@ namespace GalleryRuntime
         {
             if (_dot == null)
                 return;
+
+            // 惰性绑定相机：ScreenSpaceCamera 画布必须在相机就绪后指向 worldCamera，
+            // 否则画布不渲染；WebRTC 推流源就是 Camera.main，绑它才会进视频。
+            if (_canvas != null && _canvas.worldCamera == null)
+                _canvas.worldCamera = ResolveCaptureCamera();
 
             var target = interactor != null ? interactor : (interactor = FindFirstObjectByType<GalleryInteractor>());
             bool active = target != null && target.Active != null;
@@ -66,8 +72,15 @@ namespace GalleryRuntime
             canvasGo.transform.SetParent(transform, false);
 
             var canvas = canvasGo.AddComponent<Canvas>();
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            // ScreenSpaceOverlay canvases are composited after every camera has
+            // rendered, so they never reach Camera.CaptureStreamTrack - the WebRTC
+            // video would not contain them. ScreenSpaceCamera canvases are rendered
+            // as part of that camera's pass and therefore show up in the stream.
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = ResolveCaptureCamera();
             canvas.sortingOrder = 100;
+            ApplyCanvasDistance(canvas);
+            _canvas = canvas;
 
             var dotGo = new GameObject("Dot", typeof(RectTransform));
             var dotRt = (RectTransform)dotGo.transform;
@@ -81,6 +94,12 @@ namespace GalleryRuntime
             _dot = dotGo.AddComponent<Image>();
             _dot.sprite = CreateDotSprite();
             _dot.color = idleColor;
+
+            // Gallery walls are white, so a translucent white dot would be invisible.
+            // A dark outline keeps the dot readable on any background.
+            var outline = dotGo.AddComponent<Outline>();
+            outline.effectColor = new Color(0f, 0f, 0f, 0.85f);
+            outline.effectDistance = new Vector2(2f, 2f);
             _dot.raycastTarget = false;
 
             var hintGo = new GameObject("Hint", typeof(RectTransform));
@@ -130,6 +149,27 @@ namespace GalleryRuntime
             tex.SetPixels32(pixels);
             tex.Apply();
             return Sprite.Create(tex, new Rect(0f, 0f, size, size), new Vector2(0.5f, 0.5f), 100f);
+        }
+
+        private Camera ResolveCaptureCamera()
+        {
+            if (_captureCamera != null)
+                return _captureCamera;
+
+            var camera = Camera.main;
+            if (camera != null)
+                _captureCamera = camera;
+            return _captureCamera;
+        }
+
+        private Camera _captureCamera;
+
+        private static void ApplyCanvasDistance(Canvas canvas)
+        {
+            if (canvas.renderMode != RenderMode.ScreenSpaceCamera)
+                return;
+
+            canvas.planeDistance = 1f;
         }
     }
 }
