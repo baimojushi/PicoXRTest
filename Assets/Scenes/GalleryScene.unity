@@ -119,6 +119,143 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &46254742
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 46254743}
+  - component: {fileID: 46254746}
+  - component: {fileID: 46254745}
+  - component: {fileID: 46254744}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_005
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &46254743
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 46254742}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.5057698, y: 0.4894147, z: -3.4814577}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &46254744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 46254742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 46254746}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &46254745
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 46254742}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.21267223, y: 0.3621194, z: 0.5875573}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &46254746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 46254742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_005
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 46254744}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 46254744}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &56188807
 GameObject:
   m_ObjectHideFlags: 0
@@ -150,6 +287,63 @@ Transform:
   m_Children:
   - {fileID: 201196134}
   - {fileID: 326067928}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &79193139
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 79193140}
+  m_Layer: 0
+  m_Name: Hotspots_Auto
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &79193140
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 79193139}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 816937693}
+  - {fileID: 1009287862}
+  - {fileID: 940555072}
+  - {fileID: 826891439}
+  - {fileID: 46254743}
+  - {fileID: 1573596439}
+  - {fileID: 1908350487}
+  - {fileID: 965821774}
+  - {fileID: 849193233}
+  - {fileID: 1064461635}
+  - {fileID: 1777611332}
+  - {fileID: 1747744100}
+  - {fileID: 1508544774}
+  - {fileID: 2068165286}
+  - {fileID: 608482215}
+  - {fileID: 494243924}
+  - {fileID: 826436074}
+  - {fileID: 1501617105}
+  - {fileID: 1150263524}
+  - {fileID: 1782105191}
+  - {fileID: 1513505691}
+  - {fileID: 1591241044}
+  - {fileID: 1763242019}
+  - {fileID: 1663726217}
+  - {fileID: 619971546}
+  - {fileID: 1431039594}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &201196133
@@ -248,6 +442,1447 @@ Transform:
   m_Children: []
   m_Father: {fileID: 56188808}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &494243923
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 494243924}
+  - component: {fileID: 494243927}
+  - component: {fileID: 494243926}
+  - component: {fileID: 494243925}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_016
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &494243924
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 494243923}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -6.574337, y: 0.16564752, z: -11.514034}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &494243925
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 494243923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 494243927}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &494243926
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 494243923}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.3010497, y: 0.92697364, z: 0.75840473}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &494243927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 494243923}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_016
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 494243925}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 494243925}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &608482214
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 608482215}
+  - component: {fileID: 608482218}
+  - component: {fileID: 608482217}
+  - component: {fileID: 608482216}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_015
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &608482215
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 608482214}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -3.58107, y: 0.17257857, z: -15.705812}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &608482216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 608482214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 608482218}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &608482217
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 608482214}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.73569846, y: 2.016374, z: 2.939271}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &608482218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 608482214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_015
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 608482216}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 608482216}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &619971545
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 619971546}
+  - component: {fileID: 619971549}
+  - component: {fileID: 619971548}
+  - component: {fileID: 619971547}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_025
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &619971546
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 619971545}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -5.2861567, y: -0.13931462, z: -3.5331478}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &619971547
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 619971545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 619971549}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &619971548
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 619971545}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.38599157, y: 1.636816, z: 1.5518553}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &619971549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 619971545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_025
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 619971547}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 619971547}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &816937692
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 816937693}
+  - component: {fileID: 816937696}
+  - component: {fileID: 816937695}
+  - component: {fileID: 816937694}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_001
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &816937693
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816937692}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.205291, y: 0.19023608, z: -6.7565928}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &816937694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816937692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 816937696}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &816937695
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816937692}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.12, y: 0.37587735, z: 0.46426582}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &816937696
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816937692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_001
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 816937694}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 816937694}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &826436073
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 826436074}
+  - component: {fileID: 826436077}
+  - component: {fileID: 826436076}
+  - component: {fileID: 826436075}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_017
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &826436074
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 826436073}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -6.48452, y: 0.2561556, z: -11.24161}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &826436075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 826436073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 826436077}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &826436076
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 826436073}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.35645008, y: 1.2836878, z: 0.95521164}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &826436077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 826436073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_017
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 826436075}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 826436075}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &826891438
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 826891439}
+  - component: {fileID: 826891442}
+  - component: {fileID: 826891441}
+  - component: {fileID: 826891440}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_004
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &826891439
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 826891438}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3.5106282, y: 0.18116762, z: -5.0012245}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &826891440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 826891438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 826891442}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &826891441
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 826891438}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.23994803, y: 0.6035851, z: 0.8051343}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &826891442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 826891438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_004
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 826891440}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 826891440}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &849193232
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 849193233}
+  - component: {fileID: 849193236}
+  - component: {fileID: 849193235}
+  - component: {fileID: 849193234}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_009
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &849193233
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 849193232}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.9532387, y: 0.46797985, z: -12.06451}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &849193234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 849193232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 849193236}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &849193235
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 849193232}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.12, y: 0.2743968, z: 0.36657143}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &849193236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 849193232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_009
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 849193234}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 849193234}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &925787795
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 925787798}
+  - component: {fileID: 925787797}
+  - component: {fileID: 925787796}
+  m_Layer: 0
+  m_Name: GalleryInteraction
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &925787796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925787795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 283b161562f323147823a509d097f7f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryArtworkCatalog
+  manifestRelativePath: Gallery/Config/artworks.json
+  applyOnStart: 1
+  overwriteExisting: 0
+  verboseLogging: 1
+--- !u!114 &925787797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925787795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a85c2404694b58429fbfab6c010b763, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryReticle
+  interactor: {fileID: 1022638470}
+  font: {fileID: 0}
+  idleColor: {r: 1, g: 1, b: 1, a: 0.28}
+  focusColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  activeColor: {r: 1, g: 0.78, b: 0.25, a: 1}
+  dotSize: 10
+  focusScale: 1.9
+  focusHint: "\u6309\u300C\u4F7F\u7528\u300D\u67E5\u770B\u4F5C\u54C1\u4FE1\u606F"
+  hintFontSize: 20
+  hintColor: {r: 1, g: 1, b: 1, a: 0.9}
+--- !u!4 &925787798
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 925787795}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &940555071
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 940555072}
+  - component: {fileID: 940555075}
+  - component: {fileID: 940555074}
+  - component: {fileID: 940555073}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_003
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &940555072
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 940555071}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.1767774, y: 0.12072021, z: -7.030858}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &940555073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 940555071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 940555075}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &940555074
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 940555071}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.12, y: 0.38899052, z: 0.4559636}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &940555075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 940555071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_003
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 940555073}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 940555073}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &965821773
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 965821774}
+  - component: {fileID: 965821777}
+  - component: {fileID: 965821776}
+  - component: {fileID: 965821775}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_008
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &965821774
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965821773}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.9615442, y: 0.11554913, z: -12.063307}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &965821775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965821773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 965821777}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &965821776
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965821773}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.12, y: 0.29186437, z: 0.3075056}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &965821777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 965821773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_008
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 965821775}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 965821775}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &1009287861
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1009287862}
+  - component: {fileID: 1009287865}
+  - component: {fileID: 1009287864}
+  - component: {fileID: 1009287863}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_002
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1009287862
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1009287861}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.5227353, y: 0.0068472624, z: -12.288035}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1009287863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1009287861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 1009287865}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &1009287864
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1009287861}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.30045366, y: 0.54213756, z: 0.52516365}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1009287865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1009287861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_002
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1009287863}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1009287863}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1022638469
 GameObject:
   m_ObjectHideFlags: 0
@@ -286,6 +1921,8 @@ MonoBehaviour:
   hotspotMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  minHitDistance: 0.1
+  continuousFocus: 1
 --- !u!114 &1022638471
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -306,6 +1943,7 @@ MonoBehaviour:
   pitchSpeedDegPerSec: 90
   minPitch: -75
   maxPitch: 75
+  mouseDegPerPixel: 0.25
   resetPose: {fileID: 0}
 --- !u!114 &1022638472
 MonoBehaviour:
@@ -363,6 +2001,143 @@ Transform:
   - {fileID: 1679101985}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1064461634
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1064461635}
+  - component: {fileID: 1064461638}
+  - component: {fileID: 1064461637}
+  - component: {fileID: 1064461636}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_010
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1064461635
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064461634}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.0963569, y: 0.4776994, z: -11.652781}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1064461636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064461634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 1064461638}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &1064461637
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064461634}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.23218119, y: 0.2777364, z: 0.3999815}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1064461638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064461634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_010
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1064461636}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1064461636}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1108531399
 GameObject:
   m_ObjectHideFlags: 0
@@ -430,6 +2205,143 @@ MonoBehaviour:
   applyMicroCorrection: 0
   correctionPosition: {x: 0.01376872, y: -0.00836737, z: 0.00299699}
   correctionEulerDeg: {x: -0.1499366, y: 0.1095414, z: 0.06496119}
+--- !u!1 &1150263523
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1150263524}
+  - component: {fileID: 1150263527}
+  - component: {fileID: 1150263526}
+  - component: {fileID: 1150263525}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_019
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1150263524
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1150263523}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -6.156064, y: 0.2547496, z: -9.996321}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1150263525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1150263523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 1150263527}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &1150263526
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1150263523}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.3052411, y: 0.7226045, z: 0.89471626}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1150263527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1150263523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_019
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1150263525}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1150263525}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &1239101364
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -515,6 +2427,980 @@ MonoBehaviour:
   buildOnAwake: 1
   hideRenderers: 1
   disableShadows: 1
+--- !u!1 &1431039593
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1431039594}
+  - component: {fileID: 1431039597}
+  - component: {fileID: 1431039596}
+  - component: {fileID: 1431039595}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_026
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1431039594
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1431039593}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3.4413939, y: 0.25696158, z: -5.3246317}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1431039595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1431039593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 1431039597}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &1431039596
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1431039593}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.19151402, y: 0.54217947, z: 0.63672876}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1431039597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1431039593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_026
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1431039595}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1431039595}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &1501617104
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1501617105}
+  - component: {fileID: 1501617108}
+  - component: {fileID: 1501617107}
+  - component: {fileID: 1501617106}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_018
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1501617105
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501617104}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.1933727, y: 0.13940778, z: -6.939205}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1501617106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501617104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 1501617108}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &1501617107
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501617104}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.23723578, y: 1.397005, z: 0.97602224}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1501617108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501617104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_018
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1501617106}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1501617106}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &1508544773
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1508544774}
+  - component: {fileID: 1508544777}
+  - component: {fileID: 1508544776}
+  - component: {fileID: 1508544775}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_013
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1508544774
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508544773}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.9938741, y: -0.19555366, z: -11.956437}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1508544775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508544773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 1508544777}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &1508544776
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508544773}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.13970196, y: 0.1622185, z: 0.4008789}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1508544777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508544773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_013
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1508544775}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1508544775}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &1513505690
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1513505691}
+  - component: {fileID: 1513505694}
+  - component: {fileID: 1513505693}
+  - component: {fileID: 1513505692}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_021
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1513505691
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1513505690}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.6590817, y: 0.18215919, z: -8.293298}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1513505692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1513505690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 1513505694}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &1513505693
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1513505690}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.37723207, y: 0.6662233, z: 0.6364403}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1513505694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1513505690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_021
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1513505692}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1513505692}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &1573596438
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1573596439}
+  - component: {fileID: 1573596442}
+  - component: {fileID: 1573596441}
+  - component: {fileID: 1573596440}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_006
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1573596439
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1573596438}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.542501, y: -0.028608866, z: -3.383667}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1573596440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1573596438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 1573596442}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &1573596441
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1573596438}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.2562778, y: 0.40862787, z: 0.71097636}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1573596442
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1573596438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_006
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1573596440}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1573596440}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &1591241043
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1591241044}
+  - component: {fileID: 1591241047}
+  - component: {fileID: 1591241046}
+  - component: {fileID: 1591241045}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_022
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1591241044
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1591241043}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -5.618311, y: 0.2594159, z: -5.4871655}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1591241045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1591241043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 1591241047}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &1591241046
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1591241043}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.12, y: 0.53452104, z: 0.25472975}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1591241047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1591241043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_022
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1591241045}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1591241045}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!115 &1621818273
+MonoScript:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  serializedVersion: 7
+  m_DefaultReferences: {}
+  m_Icon: {fileID: 0}
+  m_Type: 0
+  m_ExecutionOrder: 0
+  m_ClassName: GalleryHotspotInfoCard
+  m_Namespace: GalleryRuntime
+  m_AssemblyName: GalleryRuntime
+--- !u!1 &1663726216
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1663726217}
+  - component: {fileID: 1663726220}
+  - component: {fileID: 1663726219}
+  - component: {fileID: 1663726218}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_024
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1663726217
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663726216}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -5.445059, y: -0.12398052, z: -4.6548705}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1663726218
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663726216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 1663726220}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &1663726219
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663726216}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.61173487, y: 2.5217261, z: 2.250636}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1663726220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663726216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_024
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1663726218}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1663726218}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1679101984
 GameObject:
   m_ObjectHideFlags: 0
@@ -598,9 +3484,833 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!1 &1747744099
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1747744100}
+  - component: {fileID: 1747744103}
+  - component: {fileID: 1747744102}
+  - component: {fileID: 1747744101}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_012
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1747744100
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747744099}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.9802866, y: 0.34164613, z: -12.046011}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1747744101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747744099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 1747744103}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &1747744102
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747744099}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.17228329, y: 0.6047716, z: 0.6824131}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1747744103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747744099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_012
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1747744101}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1747744101}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &1763242018
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1763242019}
+  - component: {fileID: 1763242022}
+  - component: {fileID: 1763242021}
+  - component: {fileID: 1763242020}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_023
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1763242019
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763242018}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -6.228857, y: 0.27328944, z: -10.280386}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1763242020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763242018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 1763242022}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &1763242021
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763242018}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.22276258, y: 0.62227523, z: 0.7226248}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1763242022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763242018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_023
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1763242020}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1763242020}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &1777611331
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1777611332}
+  - component: {fileID: 1777611335}
+  - component: {fileID: 1777611334}
+  - component: {fileID: 1777611333}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_011
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1777611332
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777611331}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.0447474, y: 0.11556918, z: -11.643671}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1777611333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777611331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 1777611335}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &1777611334
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777611331}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.12, y: 0.2998631, z: 0.38702106}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1777611335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777611331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_011
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1777611333}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1777611333}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &1782105190
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1782105191}
+  - component: {fileID: 1782105194}
+  - component: {fileID: 1782105193}
+  - component: {fileID: 1782105192}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_020
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1782105191
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782105190}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -3.3895588, y: -0.028180465, z: -14.704798}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1782105192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782105190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 1782105194}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &1782105193
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782105190}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.20155048, y: 0.43689784, z: 0.6937895}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1782105194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782105190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_020
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1782105192}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1782105192}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &1908350486
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1908350487}
+  - component: {fileID: 1908350490}
+  - component: {fileID: 1908350489}
+  - component: {fileID: 1908350488}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_007
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1908350487
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1908350486}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 3.5139813, y: 0.38232526, z: -4.8473816}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1908350488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1908350486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 1908350490}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &1908350489
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1908350486}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.38329244, y: 1.6020193, z: 1.5556655}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1908350490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1908350486}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_007
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1908350488}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1908350488}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &2068165285
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2068165286}
+  - component: {fileID: 2068165289}
+  - component: {fileID: 2068165288}
+  - component: {fileID: 2068165287}
+  m_Layer: 0
+  m_Name: Hotspot_artwork_014
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2068165286
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2068165285}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -6.9452343, y: 0.17483558, z: -12.962569}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 79193140}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2068165287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2068165285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1621818273}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 2068165289}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
+--- !u!65 &2068165288
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2068165285}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.1748457, y: 0.39478573, z: 0.6198902}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2068165289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2068165285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ba4cb946399d954780743cb639984cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
+  hotspotId: artwork_014
+  title: 
+  artist: 
+  year: 
+  description: 
+  onFocusEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onFocusExit:
+    m_PersistentCalls:
+      m_Calls: []
+  onActivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2068165287}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Show
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onDeactivate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2068165287}
+        m_TargetAssemblyTypeName: GalleryRuntime.GalleryHotspotInfoCard, GalleryRuntime
+        m_MethodName: Hide
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 56188808}
   - {fileID: 1022638474}
+  - {fileID: 79193140}
+  - {fileID: 925787798}

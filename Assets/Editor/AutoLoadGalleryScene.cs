@@ -64,6 +64,16 @@ public static class AutoLoadGalleryScene
             return;
         }
 
+        // Headless runs (batchmode -executeMethod) must never open a scene and enter
+        // Play Mode: scene edits made during Play Mode do not survive, and the batch
+        // job would never finish.
+        if (Application.isBatchMode)
+        {
+            Debug.Log("[AutoLoadGalleryScene] batch mode: skipping auto play");
+            Uninstall();
+            return;
+        }
+
         // Entering Play Mode triggers an assembly reload that re-runs the static
         // constructor; never start a second transition from inside that reload.
         if (EditorApplication.isPlaying || EditorApplication.isPlayingOrWillChangePlaymode)

@@ -34,10 +34,10 @@ namespace GalleryRuntime
         public string description;
 
         [Header("Events")]
-        public UnityEvent onFocusEnter;
-        public UnityEvent onFocusExit;
-        public UnityEvent onActivate;
-        public UnityEvent onDeactivate;
+        public UnityEvent onFocusEnter = new UnityEvent();
+        public UnityEvent onFocusExit = new UnityEvent();
+        public UnityEvent onActivate = new UnityEvent();
+        public UnityEvent onDeactivate = new UnityEvent();
 
         /// <summary>当前是否被玩家视线瞄准。</summary>
         public bool IsFocused { get; private set; }

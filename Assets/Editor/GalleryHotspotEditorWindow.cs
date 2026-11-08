@@ -229,85 +229,7 @@
 
         private void CreateFromZonesManifest()
         {
-            string path = StreamingPath(ZonesRelativePath);
-            if (!File.Exists(path))
-            {
-                EditorUtility.DisplayDialog("找不到 zones.json", path, "好");
-                return;
-            }
-
-            SplatZoneManifest manifest;
-            try
-            {
-                manifest = JsonUtility.FromJson<SplatZoneManifest>(File.ReadAllText(path, Encoding.UTF8));
-            }
-            catch (System.Exception e)
-            {
-                EditorUtility.DisplayDialog("zones.json 解析失败", e.Message, "好");
-                return;
-            }
-
-            if (manifest?.zones == null || manifest.zones.Length == 0)
-            {
-                EditorUtility.DisplayDialog("zones.json 里没有 zone", path, "好");
-                return;
-            }
-
-            var existing = new HashSet<string>();
-            foreach (var s in FindObjectsByType<GalleryHotspot>(FindObjectsInactive.Include, FindObjectsSortMode.None))
-            {
-                if (!string.IsNullOrEmpty(s.hotspotId)) existing.Add(s.hotspotId);
-            }
-
-            var root = GameObject.Find(AutoRootName);
-            if (root == null)
-            {
-                root = new GameObject(AutoRootName);
-                Undo.RegisterCreatedObjectUndo(root, "Create Hotspots Root");
-            }
-
-            int created = 0, skipped = 0;
-            foreach (var zone in manifest.zones)
-            {
-                if (zone == null || string.IsNullOrWhiteSpace(zone.id)) continue;
-                if (existing.Contains(zone.id)) { skipped++; continue; }
-
-                var center = zone.center.ToVector3();
-                // JsonVec3 是结构体：字段缺失时会保留全零默认值，据此判断"未提供尺寸"
-                var size = zone.boxSize.ToVector3();
-                if (size == Vector3.zero) size = new Vector3(0.6f, 0.6f, 0.4f);
-                size = new Vector3(
-                    Mathf.Max(0.12f, size.x), Mathf.Max(0.12f, size.y), Mathf.Max(0.12f, size.z));
-
-                var go = new GameObject($"Hotspot_{zone.id}");
-                Undo.RegisterCreatedObjectUndo(go, "Create Gallery Hotspot");
-                go.transform.SetParent(root.transform, true);
-                // zones.json 的 boxSize 是世界轴对齐包围盒，因此方体保持单位旋转
-                go.transform.SetPositionAndRotation(center, Quaternion.identity);
-
-                var collider = go.AddComponent<BoxCollider>();
-                collider.isTrigger = true;
-                collider.size = size;
-
-                var spot = go.AddComponent<GalleryHotspot>();
-                spot.hotspotId = zone.id;
-
-                var card = go.AddComponent<GalleryHotspotInfoCard>();
-                card.hotspot = spot;
-                UnityEventTools.AddPersistentListener(spot.onActivate, new UnityAction(card.Show));
-                UnityEventTools.AddPersistentListener(spot.onDeactivate, new UnityAction(card.Hide));
-
-                EditorUtility.SetDirty(spot);
-                EditorUtility.SetDirty(card);
-                created++;
-            }
-
-            AssetDatabase.SaveAssets();
-            Debug.Log($"[Gallery 热点] 从 zones.json 生成 {created} 个热点（已存在跳过 {skipped} 个）");
-            EditorUtility.DisplayDialog(
-                "完成",
-                $"生成 {created} 个热点，跳过已存在 {skipped} 个。\n下一步可点「生成/更新 artworks.json 模板」再录入标题。",
-                "好");
+            GalleryHotspotSceneStager.StageFromMenu();
         }
 
         // ---------- artworks.json ----------
@@ -415,32 +337,7 @@
 
         private void SetupInteractionRig()
         {
-            var go = GameObject.Find(InteractionRootName);
-            if (go == null)
-            {
-                go = new GameObject(InteractionRootName);
-                Undo.RegisterCreatedObjectUndo(go, "Create Gallery Interaction Rig");
-            }
-
-            var reticle = go.GetComponent<GalleryReticle>();
-            if (reticle == null) reticle = Undo.AddComponent<GalleryReticle>(go);
-
-            var catalog = go.GetComponent<GalleryArtworkCatalog>();
-            if (catalog == null) catalog = Undo.AddComponent<GalleryArtworkCatalog>(go);
-
-            var interactor = FindFirstObjectByType<GalleryInteractor>(FindObjectsInactive.Include);
-            if (interactor != null)
-            {
-                reticle.interactor = interactor;
-                EditorUtility.SetDirty(reticle);
-            }
-            else
-            {
-                Debug.LogWarning("[Gallery 热点] 场景里没找到 GalleryInteractor；准星会自动查找，但建议显式指定");
-            }
-
-            Selection.activeGameObject = go;
-            Debug.Log($"[Gallery 热点] 交互装备就绪：{InteractionRootName}（准星 + 内容目录），interactor={(interactor != null ? interactor.name : "未指定")}");
+            GalleryHotspotSceneStager.SetupRigOnly();
         }
 
         private static string StreamingPath(string relative)
