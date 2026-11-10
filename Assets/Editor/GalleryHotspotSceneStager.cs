@@ -172,8 +172,11 @@ namespace GalleryEditor
                     updated++;
                 }
 
-                // zones.json holds world-space axis-aligned boxes, so no rotation
-                spot.transform.SetPositionAndRotation(zone.center.ToVector3(), Quaternion.identity);
+                // zones.json 中的中心坐标来自 3DGS 点云坐标系，其 Z 轴与 Unity 世界坐标系方向相反；
+                // 落地前需做 Z 轴镜像翻转才能与高斯点云对齐。boxSize 为尺寸，不受影响。
+                var center = zone.center.ToVector3();
+                center = new Vector3(center.x, center.y, -center.z);
+                spot.transform.SetPositionAndRotation(center, Quaternion.identity);
 
                 var collider = spot.GetComponent<BoxCollider>();
                 if (collider == null)
@@ -195,12 +198,33 @@ namespace GalleryEditor
                 EditorUtility.SetDirty(card);
             }
 
+            // Auto hotspots absent from zones.json are stale leftovers from older runs
+            // (wrong Sim(3) coordinates) - drop them so the scene matches the manifest.
+            var validIds = new HashSet<string>();
+            foreach (var zone in manifest.zones)
+            {
+                if (zone != null && !string.IsNullOrWhiteSpace(zone.id))
+                    validIds.Add(zone.id);
+            }
+
+            int removed = 0;
+            foreach (var autoSpot in root.GetComponentsInChildren<GalleryHotspot>(true))
+            {
+                if (autoSpot == null)
+                    continue;
+                if (string.IsNullOrEmpty(autoSpot.hotspotId) || !validIds.Contains(autoSpot.hotspotId))
+                {
+                    UnityEngine.Object.DestroyImmediate(autoSpot.gameObject);
+                    removed++;
+                }
+            }
+
             SetupInteractionRig(scene);
 
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
 
-            Debug.Log($"[GalleryHotspotSceneStager] 落地完成：新建 {created}，更新 {updated}，场景已保存 {ScenePath}");
+            Debug.Log($"[GalleryHotspotSceneStager] 落地完成：新建 {created}，更新 {updated}，移除孤儿 {removed}，场景已保存 {ScenePath}");
             return created + updated;
         }
 

@@ -33,21 +33,41 @@ namespace GalleryRuntime
 
         private GalleryHotspot _active;
 
+        private void Awake()
+        {
+            if (remoteInput == null)
+                remoteInput = FindFirstObjectByType<RemoteControlUdpReceiver>();
+            if (remoteInput == null)
+                Debug.LogWarning("[GalleryInteractor] RemoteControlUdpReceiver missing; USE disabled");
+
+            if (playerCamera == null)
+                playerCamera = Camera.main;
+            if (playerCamera == null)
+                Debug.LogWarning("[GalleryInteractor] playerCamera missing; aim ray disabled");
+        }
+
         private void Update()
         {
             // 热点可能因对象卸载而静默关闭，及时清掉本地引用
             if (_active != null && !_active.IsActive)
                 _active = null;
 
-            bool pressed = remoteInput != null && remoteInput.InteractPressedThisFrame;
-
+            // playerCamera 在 Play Mode 首帧可能尚未就绪（或场景相机未打 MainCamera tag），
+            // 每帧重试查找，避免一次性失败导致射线永不发射、USE 永不触发。
             if (playerCamera == null)
             {
-                SetFocused(null);
-                if (pressed)
-                    CloseActive();
-                return;
+                playerCamera = Camera.main ?? FindFirstObjectByType<Camera>();
+                if (playerCamera == null)
+                {
+                    SetFocused(null);
+                    return;
+                }
             }
+
+            bool udpPressed = remoteInput != null && remoteInput.InteractPressedThisFrame;
+            // PC 端回退：按 E 键触发 USE（避免依赖移动端 UDP 遥控）
+            bool keyPressed = Input.GetKeyDown(KeyCode.E);
+            bool pressed = udpPressed || keyPressed;
 
             if (continuousFocus || pressed)
                 SetFocused(Probe());
