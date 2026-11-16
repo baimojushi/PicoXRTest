@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 46254748}
   - component: {fileID: 46254749}
   - component: {fileID: 46254750}
+  - component: {fileID: 46254751}
   m_Layer: 0
   m_Name: Hotspot_artwork_005
   m_TagString: Untagged
@@ -220,6 +221,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_005
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -376,6 +379,35 @@ MonoBehaviour:
   bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
   fadeSeconds: 0.15
   autoHideSeconds: 0
+--- !u!114 &46254751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 46254742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 104710109}
+  m_Name: 
+  m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspotInfoCard
+  hotspot: {fileID: 46254746}
+  targetCamera: {fileID: 0}
+  distance: 2
+  cardHeight: 0.62
+  cardAspect: {x: 16, y: 10}
+  verticalOffset: -0.08
+  font: {fileID: 0}
+  titleSizeRatio: 0.105
+  subtitleSizeRatio: 0.058
+  bodySizeRatio: 0.055
+  panelColor: {r: 0.05, g: 0.06, b: 0.08, a: 0.9}
+  accentColor: {r: 0.25, g: 1, b: 0.65, a: 0.95}
+  titleColor: {r: 1, g: 1, b: 1, a: 1}
+  subtitleColor: {r: 0.7, g: 0.78, b: 0.86, a: 1}
+  bodyColor: {r: 0.86, g: 0.88, b: 0.92, a: 1}
+  fadeSeconds: 0.15
+  autoHideSeconds: 0
 --- !u!1 &56188807
 GameObject:
   m_ObjectHideFlags: 0
@@ -476,6 +508,21 @@ Transform:
   - {fileID: 1513505691}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!115 &104710109
+MonoScript:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  serializedVersion: 7
+  m_DefaultReferences: {}
+  m_Icon: {fileID: 0}
+  m_Type: 0
+  m_ExecutionOrder: 0
+  m_ClassName: GalleryHotspotInfoCard
+  m_Namespace: GalleryRuntime
+  m_AssemblyName: GalleryRuntime
 --- !u!1 &201196133
 GameObject:
   m_ObjectHideFlags: 0
@@ -685,6 +732,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_016
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -852,6 +901,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_015
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -1019,6 +1070,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_001
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -1186,6 +1239,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_017
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -1353,6 +1408,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_004
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -1520,6 +1577,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_009
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -1756,6 +1815,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_003
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -1923,6 +1984,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_008
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -2090,6 +2153,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_002
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -2375,6 +2440,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_010
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -2609,6 +2676,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_019
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -2861,6 +2930,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_018
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -3028,6 +3099,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_013
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -3195,6 +3268,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_021
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -3362,6 +3437,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_006
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -3641,6 +3718,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_012
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -3778,6 +3857,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_011
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -3915,6 +3996,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_020
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -4067,6 +4150,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_007
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 
@@ -4204,6 +4289,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: GalleryRuntime::GalleryRuntime.GalleryHotspot
   hotspotId: artwork_014
+  exhibitionId: 
+  artworkId: 
   title: 
   artist: 
   year: 

@@ -50,6 +50,15 @@ public class VideoPusher : MonoBehaviour
     float fps;
     int sessionCount;
 
+    void OnEnable() { GalleryRuntime.GalleryJourneyBridge.RemoteSelection += SendJourneySelection; }
+    void OnDisable() { GalleryRuntime.GalleryJourneyBridge.RemoteSelection -= SendJourneySelection; }
+    bool SendJourneySelection(string payload)
+    {
+        if (control == null || control.ReadyState != RTCDataChannelState.Open) return false;
+        try { control.Send(payload); return true; }
+        catch (Exception) { Debug.LogWarning("[Journey] Data channel selection failed"); return false; }
+    }
+
     IEnumerator Start()
     {
         cam = GetComponent<Camera>();
@@ -119,9 +128,9 @@ public class VideoPusher : MonoBehaviour
         if (control == null || control.ReadyState != RTCDataChannelState.Open) return;
         var p = cam.transform.position;
         var e = cam.transform.eulerAngles;
-        string json = "{\"type\":\"state\",\"fps\":" + fps.ToString("F1") +
-                      ",\"pos\":[" + p.x.ToString("F2") + "," + p.y.ToString("F2") + "," + p.z.ToString("F2") + "]" +
-                      ",\"rot\":[" + e.x.ToString("F1") + "," + e.y.ToString("F1") + "]" +
+        string json = "{\"type\":\"state\",\"fps\":" + fps.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) +
+                      ",\"pos\":[" + p.x.ToString("F2", System.Globalization.CultureInfo.InvariantCulture) + "," + p.y.ToString("F2", System.Globalization.CultureInfo.InvariantCulture) + "," + p.z.ToString("F2", System.Globalization.CultureInfo.InvariantCulture) + "]" +
+                      ",\"rot\":[" + e.x.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + "," + e.y.ToString("F1", System.Globalization.CultureInfo.InvariantCulture) + "]" +
                       ",\"frames\":" + frameCount +
                       ",\"session\":" + sessionCount +
                       ",\"latencyMs\":" + lastRttMs + "}";

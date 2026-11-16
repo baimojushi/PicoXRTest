@@ -50,6 +50,14 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(500, 'text/plain; charset=utf-8', b'page missing')
                 return
             self._send(200, 'text/html; charset=utf-8', body)
+        elif path in ('/journey-client.js', '/journey-client-config.json'):
+            filename = 'journey-client.js' if path.endswith('.js') else 'journey-client-config.json'
+            content_type = 'text/javascript; charset=utf-8' if filename.endswith('.js') else 'application/json; charset=utf-8'
+            try:
+                with open(os.path.join(ROOT, filename), 'rb') as stream:
+                    self._send(200, content_type, stream.read())
+            except OSError:
+                self._send(404, 'text/plain; charset=utf-8', b'not found')
         else:
             self._send(404, 'text/plain; charset=utf-8', b'not found')
 

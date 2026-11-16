@@ -23,6 +23,9 @@ namespace GalleryRuntime
         [Header("Identity")]
         [Tooltip("唯一 ID，对应 zones.json 里的 zone id（如 artwork_001）")]
         public string hotspotId = "artwork";
+        [Header("MoLink business identity (loaded from catalog)")]
+        public string exhibitionId;
+        public string artworkId;
 
         [Header("Content")]
         [Tooltip("作品标题；留空则显示 hotspotId。可由 GalleryArtworkCatalog 从 artworks.json 自动填充")]
@@ -72,6 +75,7 @@ namespace GalleryRuntime
             IsActive = true;
             ActivateCount++;
             Debug.Log($"[GalleryHotspot] Activate {hotspotId}（第 {ActivateCount} 次）", this);
+            GalleryJourneyBridge.NotifyActivated(this);
             onActivate?.Invoke();
         }
 

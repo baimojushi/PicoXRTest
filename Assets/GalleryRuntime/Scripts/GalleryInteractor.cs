@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace GalleryRuntime
 {
@@ -66,11 +67,12 @@ namespace GalleryRuntime
 
             bool udpPressed = remoteInput != null && remoteInput.InteractPressedThisFrame;
             // PC 端回退：按 E 键触发 USE（避免依赖移动端 UDP 遥控）
-            bool keyPressed = Input.GetKeyDown(KeyCode.E);
-            bool pressed = udpPressed || keyPressed;
+            bool keyPressed = Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame;
+            bool mousePressed = Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
+            bool pressed = udpPressed || keyPressed || mousePressed;
 
             if (continuousFocus || pressed)
-                SetFocused(Probe());
+                SetFocused(Probe(mousePressed));
 
             if (!pressed)
                 return;
@@ -86,9 +88,11 @@ namespace GalleryRuntime
             }
         }
 
-        private GalleryHotspot Probe()
+        private GalleryHotspot Probe(bool mousePressed = false)
         {
-            var ray = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+            var ray = mousePressed && Cursor.lockState != CursorLockMode.Locked
+                ? playerCamera.ScreenPointToRay(Mouse.current.position.ReadValue())
+                : new Ray(playerCamera.transform.position, playerCamera.transform.forward);
             if (!Physics.Raycast(ray, out var hit, maxDistance, hotspotMask, QueryTriggerInteraction.Collide))
                 return null;
             if (hit.distance < minHitDistance)
