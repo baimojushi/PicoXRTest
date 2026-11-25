@@ -1,8 +1,9 @@
 {
-  "enabled": true,
-  "apiBaseUrl": "http://127.0.0.1:3000",
+  "schemaVersion": "molink.journey/1.1",
+  "deliveryMode": "local-browser",
   "exhibitionId": "",
-  "deliveryMode": "remote",
-  "allowInsecureLocalhost": true,
-  "requestTimeoutSeconds": 15
+  "apiBaseUrl": "https://www.molink.art",
+  "allowInsecureLocalhost": false,
+  "refreshSeconds": 60,
+  "sceneToken": "D1AUZMLH8DMXCEPASk58ioECOwYaTfmYoFDKkhjY7YY"
 }

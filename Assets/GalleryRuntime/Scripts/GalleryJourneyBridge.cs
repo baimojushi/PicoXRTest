@@ -1,194 +1,228 @@
+// Unity on a local PC -> Railway over HTTPS; no reverse connection or cloud->localhost required.
+// The 21 GalleryHotspot components are discovery-based: no per-hotspot Inspector wiring.
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Networking;
 
 namespace GalleryRuntime
 {
-    [Serializable] public sealed class JourneyConfig
+    [Serializable]
+    public class JourneyLocalConfig
     {
-        public bool enabled = true;
-        public string apiBaseUrl;
+        public string schemaVersion;
+        public string deliveryMode;
         public string exhibitionId;
-        public string deliveryMode = "browser";
+        public string apiBaseUrl;
         public bool allowInsecureLocalhost;
-        public int requestTimeoutSeconds = 15;
+        public int refreshSeconds = 60;
+        public string sceneToken;
     }
-    [Serializable] public sealed class JourneyArtwork
+
+    [Serializable]
+    public class JourneyArtwork
     {
-        public string exhibition_id;
         public string hotspot_id;
         public string artwork_id;
+        public string exhibition_id;
         public string title;
         public string artist;
         public string description;
         public string size_text;
+        public string display_price;
         public string image_url;
     }
-    [Serializable] public sealed class JourneyManifest { public JourneyArtwork[] artworks; }
-    [Serializable] public sealed class JourneySelection
+
+    [Serializable]
+    public class JourneyManifest
     {
-        public string type = "molink.artwork.selected";
-        public string schema_version = "molink.gallery-event/1.0";
+        public string schema_version;
         public string exhibition_id;
-        public string hotspot_id;
-        public string artwork_id;
-        public string title;
-        public string detail_url;
+        public int revision;
+        public JourneyArtwork[] artworks;
     }
 
     /// <summary>
-    /// Public-catalog-only bridge. Platform, GPU and payment credentials must
-    /// never be stored in StreamingAssets or sent through the data channel.
-    /// One Unity player process corresponds to one remotely controlled session.
+    /// Local build client of the public Railway Journey manifest. The manifest is
+    /// published only after Admin verifies every registered hotspot against a
+    /// distinct, published artwork with an active SKU.
+    /// Selecting a hotspot opens the Railway journey page in the desktop browser.
+    /// In PicoXRTest, a connected WebRTC bridge may forward the selection to the
+    /// remote browser instead. No admin token is ever present in Unity.
     /// </summary>
+    [DisallowMultipleComponent]
     public sealed class GalleryJourneyBridge : MonoBehaviour
     {
-        public static event Func<string, bool> RemoteSelection;
-        private static GalleryJourneyBridge instance;
-        private JourneyConfig config;
-        private readonly Dictionary<string, JourneyArtwork> byHotspot = new Dictionary<string, JourneyArtwork>(StringComparer.Ordinal);
-        private string pendingHotspot;
-        private bool ready;
-        private float nextBindingRefresh;
-        private float lastSelectionAt = -10f;
-        public bool IsReady => ready;
+        public string configRelativePath = "Gallery/Config/journey.json";
+        public bool openBrowserOnSelect = true;
+        public bool verboseLogging = true;
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics() { instance = null; RemoteSelection = null; }
+        // Optional local WebRTC sender. Returns true only when a remote receiver is connected.
+        public static Func<string, string, string, bool> RemoteSelectionHandler;
+
+        private JourneyLocalConfig config;
+        private readonly Dictionary<string, JourneyArtwork> byHotspot = new Dictionary<string, JourneyArtwork>(StringComparer.Ordinal);
+        private readonly Dictionary<GalleryHotspot, UnityAction> listeners = new Dictionary<GalleryHotspot, UnityAction>();
+        private string origin;
+        private int revision;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        private static void Bootstrap()
+        private static void Install()
         {
-            if (instance != null) return;
-            var host = new GameObject("MoLink_JourneyBridge");
-            instance = host.AddComponent<GalleryJourneyBridge>();
-            DontDestroyOnLoad(host);
+            if (FindFirstObjectByType<GalleryJourneyBridge>() != null) return;
+            var root = new GameObject("GalleryJourneyRailwayBridge");
+            root.AddComponent<GalleryJourneyBridge>();
+            DontDestroyOnLoad(root);
         }
 
         private IEnumerator Start()
         {
-            string configPath = Path.Combine(Application.streamingAssetsPath, "Gallery/Config/journey.json").Replace('\\', '/');
-            if (!configPath.Contains("://")) configPath = new Uri(configPath).AbsoluteUri;
-            using (var request = UnityWebRequest.Get(configPath))
+            string path = System.IO.Path.Combine(Application.streamingAssetsPath, configRelativePath.Replace('/', System.IO.Path.DirectorySeparatorChar));
+            string fileUri = path.Contains("://") ? path : new Uri(path).AbsoluteUri;
+            using (var file = UnityWebRequest.Get(fileUri))
             {
-                request.timeout = 10;
-                yield return request.SendWebRequest();
-                if (request.result != UnityWebRequest.Result.Success) { Debug.LogWarning("[Journey] Configuration could not be loaded"); yield break; }
-                try { config = JsonUtility.FromJson<JourneyConfig>(request.downloadHandler.text); }
-                catch (Exception) { Debug.LogWarning("[Journey] Invalid configuration"); yield break; }
+                file.timeout = 10;
+                yield return file.SendWebRequest();
+                if (file.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogWarning("[GalleryJourney] Missing journey.json: " + file.error);
+                    yield break;
+                }
+                try { config = JsonUtility.FromJson<JourneyLocalConfig>(file.downloadHandler.text); }
+                catch (Exception e) { Debug.LogError("[GalleryJourney] Configuration JSON: " + e.Message); yield break; }
             }
-            if (config == null || !config.enabled) yield break;
-            if (string.IsNullOrWhiteSpace(config.exhibitionId) || !IsSafeBaseUrl(config.apiBaseUrl, config.allowInsecureLocalhost))
-            { Debug.LogWarning("[Journey] Configure a public HTTPS business URL and exhibitionId in journey.json"); yield break; }
-            if (config.deliveryMode != "browser" && config.deliveryMode != "remote")
-            { Debug.LogError("[Journey] deliveryMode must be browser or remote"); yield break; }
+            if (config == null || string.IsNullOrWhiteSpace(config.exhibitionId) ||
+                !TryValidateOrigin(config.apiBaseUrl, config.allowInsecureLocalhost, out origin))
+            {
+                Debug.LogWarning("[GalleryJourney] Configure exhibitionId and public Railway HTTPS apiBaseUrl first; bridge disabled.");
+                yield break;
+            }
+            int seconds = Mathf.Clamp(config.refreshSeconds <= 0 ? 60 : config.refreshSeconds, 15, 3600);
             while (enabled)
             {
-                yield return LoadCatalog();
-                yield return new WaitForSecondsRealtime(120f);
+                BindAllHotspots();
+                yield return FetchPublishedManifest();
+                ApplyPublishedTitles();
+                yield return new WaitForSecondsRealtime(seconds);
             }
         }
 
-        public static bool IsSafeBaseUrl(string value, bool allowLoopback)
+        private IEnumerator FetchPublishedManifest()
         {
-            if (!Uri.TryCreate(value, UriKind.Absolute, out var uri) || !string.IsNullOrEmpty(uri.UserInfo) ||
-                !string.IsNullOrEmpty(uri.Query) || !string.IsNullOrEmpty(uri.Fragment) || uri.AbsolutePath != "/") return false;
-            return uri.Scheme == "https" || (allowLoopback && uri.Scheme == "http" && uri.IsLoopback);
-        }
-
-        public static string DetailUrl(string baseUrl, string exhibitionId, string hotspotId, string artworkId)
-        {
-            return baseUrl.TrimEnd('/') + "/journey/?exhibition_id=" + Uri.EscapeDataString(exhibitionId) +
-                "&hotspot_id=" + Uri.EscapeDataString(hotspotId) + "&artwork_id=" + Uri.EscapeDataString(artworkId);
-        }
-
-        private IEnumerator LoadCatalog()
-        {
-            string url = config.apiBaseUrl.TrimEnd('/') + "/api/journey/catalog?exhibition_id=" + Uri.EscapeDataString(config.exhibitionId);
+            string url = origin + "/api/journey/exhibitions/" + Uri.EscapeDataString(config.exhibitionId) + "/manifest";
             using (var request = UnityWebRequest.Get(url))
             {
-                request.timeout = Mathf.Clamp(config.requestTimeoutSeconds, 3, 30);
+                request.timeout = 20;
                 yield return request.SendWebRequest();
                 if (request.result != UnityWebRequest.Result.Success)
                 {
-                    ready = false;
-                    Debug.LogWarning("[Journey] Catalog unavailable; selection is disabled until refresh");
+                    Debug.LogWarning("[GalleryJourney] Manifest unavailable (not published or network error): " + request.responseCode + " " + request.error);
                     yield break;
                 }
                 JourneyManifest manifest;
                 try { manifest = JsonUtility.FromJson<JourneyManifest>(request.downloadHandler.text); }
-                catch (Exception) { ready = false; Debug.LogWarning("[Journey] Invalid catalog response"); yield break; }
+                catch (Exception e) { Debug.LogWarning("[GalleryJourney] Invalid manifest: " + e.Message); yield break; }
+                if (manifest == null || manifest.exhibition_id != config.exhibitionId || manifest.artworks == null || manifest.artworks.Length == 0)
+                {
+                    Debug.LogWarning("[GalleryJourney] Manifest failed exhibition contract; old mapping retained.");
+                    yield break;
+                }
+                var next = new Dictionary<string, JourneyArtwork>(StringComparer.Ordinal);
+                bool valid = true;
+                foreach (var item in manifest.artworks)
+                {
+                    if (item == null || string.IsNullOrEmpty(item.artwork_id) || !IsValidHotspotId(item.hotspot_id) || next.ContainsKey(item.hotspot_id)) { valid = false; break; }
+                    next.Add(item.hotspot_id, item);
+                }
+                if (!valid || next.Count != manifest.artworks.Length)
+                {
+                    Debug.LogWarning("[GalleryJourney] Invalid or duplicate hotspot IDs in manifest.");
+                    yield break;
+                }
                 byHotspot.Clear();
-                if (manifest?.artworks != null)
-                    foreach (var artwork in manifest.artworks)
-                    {
-                        if (artwork == null || artwork.exhibition_id != config.exhibitionId ||
-                            string.IsNullOrWhiteSpace(artwork.hotspot_id) || string.IsNullOrWhiteSpace(artwork.artwork_id)) continue;
-                        if (byHotspot.ContainsKey(artwork.hotspot_id))
-                        { ready = false; byHotspot.Clear(); Debug.LogError("[Journey] Duplicate hotspot mapping; catalog rejected"); yield break; }
-                        byHotspot.Add(artwork.hotspot_id, artwork);
-                    }
-                ready = true;
-                BindSceneHotspots();
-                if (!string.IsNullOrEmpty(pendingHotspot)) { string pending = pendingHotspot; pendingHotspot = null; Select(pending); }
+                foreach (var pair in next) byHotspot.Add(pair.Key, pair.Value);
+                revision = manifest.revision;
+                if (verboseLogging) Debug.Log("[GalleryJourney] Railway manifest v" + revision + ": " + byHotspot.Count + " artworks ready");
             }
         }
 
-        private void Update()
+        // Hotspots are registered per exhibition on the business side; the local scene only
+        // needs a stable, non-empty identifier that fits the admin identifier rules.
+        private static bool IsValidHotspotId(string id)
         {
-            if (!ready || Time.unscaledTime < nextBindingRefresh) return;
-            nextBindingRefresh = Time.unscaledTime + 2f;
-            BindSceneHotspots();
+            if (string.IsNullOrEmpty(id) || id.Length > 128) return false;
+            foreach (char c in id)
+            {
+                bool ok = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_' || c == '.' || c == '-';
+                if (!ok) return false;
+            }
+            return true;
         }
 
-        private void BindSceneHotspots()
+        private static bool TryValidateOrigin(string raw, bool localhostAllowed, out string baseUrl)
         {
+            baseUrl = null;
+            if (!Uri.TryCreate(raw, UriKind.Absolute, out var parsed) || !string.IsNullOrEmpty(parsed.UserInfo)) return false;
+            if (parsed.AbsolutePath != "/" || !string.IsNullOrEmpty(parsed.Query) || !string.IsNullOrEmpty(parsed.Fragment)) return false;
+            bool local = parsed.Host == "localhost" || parsed.Host == "127.0.0.1";
+            if (parsed.Scheme != Uri.UriSchemeHttps && !(localhostAllowed && local && parsed.Scheme == Uri.UriSchemeHttp)) return false;
+            baseUrl = parsed.GetLeftPart(UriPartial.Authority);
+            return true;
+        }
+
+        private void BindAllHotspots()
+        {
+            // Dynamic scene zones may add/remove hotspot GameObjects after startup.
             foreach (var spot in FindObjectsByType<GalleryHotspot>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
-                if (!byHotspot.TryGetValue(spot.hotspotId, out var artwork)) continue;
-                spot.exhibitionId = artwork.exhibition_id;
-                spot.artworkId = artwork.artwork_id;
-                spot.title = artwork.title;
-                spot.artist = artwork.artist;
-                spot.description = artwork.description;
+                if (spot == null || listeners.ContainsKey(spot)) continue;
+                var selected = spot;
+                UnityAction action = () => OnHotspotSelected(selected);
+                if (spot.onActivate == null) spot.onActivate = new UnityEvent();
+                spot.onActivate.AddListener(action);
+                listeners.Add(spot, action);
             }
         }
 
-        public static void NotifyActivated(GalleryHotspot hotspot)
+        private void ApplyPublishedTitles()
         {
-            if (hotspot == null) return;
-            if (instance == null) Bootstrap();
-            instance.Select(hotspot.hotspotId);
-        }
-
-        private void Select(string hotspotId)
-        {
-            if (config != null && !config.enabled) return;
-            if (!ready) { pendingHotspot = hotspotId; return; }
-            if (Time.unscaledTime - lastSelectionAt < 0.35f) return;
-            if (!byHotspot.TryGetValue(hotspotId, out var artwork))
-            { Debug.LogWarning("[Journey] No business artwork is bound to hotspot " + hotspotId); return; }
-            lastSelectionAt = Time.unscaledTime;
-            var message = new JourneySelection { exhibition_id = artwork.exhibition_id, hotspot_id = hotspotId,
-                artwork_id = artwork.artwork_id, title = artwork.title,
-                detail_url = DetailUrl(config.apiBaseUrl, artwork.exhibition_id, hotspotId, artwork.artwork_id) };
-            string serialized = JsonUtility.ToJson(message);
-            bool delivered = false;
-            if (RemoteSelection != null)
-                foreach (Func<string, bool> sink in RemoteSelection.GetInvocationList())
-                    try { delivered |= sink(serialized); }
-                    catch (Exception) { Debug.LogWarning("[Journey] Remote selection delivery failed"); }
-            if (config.deliveryMode == "remote")
+            foreach (var pair in listeners)
             {
-                if (!delivered) Debug.LogWarning("[Journey] No connected browser received the selection");
-                return; // Never open a browser on the streaming server.
+                var spot = pair.Key;
+                if (spot == null) continue;
+                if (!byHotspot.TryGetValue(spot.hotspotId, out var item)) continue;
+#if MOLINK_GALLERY_NO_CONTENT
+                // The simpler UnitySplatsGallery GalleryHotspot only has a hotspotId.
+#else
+                spot.title = item.title;
+                spot.artist = item.artist;
+                spot.description = item.description;
+#endif
             }
-            if (!delivered) Application.OpenURL(message.detail_url);
         }
 
-        private void OnDestroy() { if (instance == this) instance = null; }
+        private void OnHotspotSelected(GalleryHotspot spot)
+        {
+            if (spot == null || config == null || !byHotspot.TryGetValue(spot.hotspotId, out var selected))
+            {
+                if (verboseLogging) Debug.LogWarning("[GalleryJourney] Selected hotspot has no published mapping: " + (spot == null ? "null" : spot.hotspotId));
+                return;
+            }
+            if (RemoteSelectionHandler != null && RemoteSelectionHandler(config.exhibitionId, spot.hotspotId, selected.artwork_id)) return;
+            if (openBrowserOnSelect)
+            {
+                string target = origin + "/journey/?exhibition_id=" + Uri.EscapeDataString(config.exhibitionId) +
+                                "&hotspot_id=" + Uri.EscapeDataString(spot.hotspotId);
+                Application.OpenURL(target);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            foreach (var pair in listeners) if (pair.Key != null) pair.Key.onActivate.RemoveListener(pair.Value);
+            listeners.Clear();
+        }
     }
 }

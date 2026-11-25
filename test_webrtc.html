@@ -103,12 +103,6 @@
     #btn-use{width:72px;height:72px}
     #btn-reset{width:54px;height:54px}
   }
-
-  #journey-choice[hidden]{display:none}
-  #journey-choice{position:fixed;z-index:100;left:50%;top:50%;transform:translate(-50%,-50%);width:min(420px,90vw);padding:26px;background:#f7f6f2;color:#263c3a;border-radius:12px;box-shadow:0 20px 80px #0008;touch-action:manipulation;font:16px/1.6 system-ui}
-  #journey-choice h2{font-size:24px;margin:0 0 15px}
-  #journey-choice a,#journey-choice button{display:block;text-align:center;padding:12px;margin-top:12px;border:1px solid #bdc8bd;border-radius:6px;color:inherit;text-decoration:none;width:100%;font:inherit;cursor:pointer}
-  #journey-choice a{background:#263c3a;color:#fff}
 </style>
 </head>
 <body>
@@ -149,12 +143,6 @@
 
 <div id="rotate-hint">↻ 横屏体验更佳</div>
 
-<div id="journey-choice" hidden role="dialog" aria-modal="true" aria-labelledby="journey-title">
-<h2 id="journey-title"></h2>
-<a id="journey-link" target="_blank" rel="noopener noreferrer">浏览介绍·挂进我家</a>
-<button id="journey-close">继续参观</button>
-</div>
-<script src="journey-client.js"></script>
 <script>
 const $ = id => document.getElementById(id);
 const logEl = $('log');
@@ -279,7 +267,10 @@ function createPeer() {
   dc.onclose = () => { stopControls(); setText('dc', 'closed'); log('DataChannel 关闭', 'warn'); };
   dc.onmessage = e => {
     let msg; try { msg = JSON.parse(e.data); } catch { return; }
-    if (msg.type === 'molink.artwork.selected') { receiveJourneySelection(msg); return; }
+    if (msg.type === 'molink.artwork.selected') {
+      handleGallerySelection(msg);
+      return;
+    }
     if (msg.type === 'state') {
       setText('pos', msg.pos.join(', '));
       setText('rot', msg.rot ? msg.rot.join(', ') : '-');
@@ -287,6 +278,32 @@ function createPeer() {
       if (msg.latencyMs != null) setText('lat', String(msg.latencyMs));
     }
   };
+}
+
+let journeyClientConfig = null;
+(async function loadJourneyClientConfig(){
+  try {
+    const res = await fetch('journey-client-config.json', {cache:'no-store'});
+    if(!res.ok) return;
+    const value = await res.json();
+    const origin = new URL(value.businessOrigin);
+    if(origin.protocol !== 'https:' || origin.pathname !== '/' || origin.search || origin.hash || origin.username || origin.password) return;
+    journeyClientConfig = {origin:origin.origin,exhibitionId:value.exhibitionId};
+  } catch(e) { log('Journey config unavailable; remote art links disabled', 'warn'); }
+})();
+function handleGallerySelection(msg){
+  if(!journeyClientConfig || msg.exhibition_id !== journeyClientConfig.exhibitionId ||
+    !/^[A-Za-z0-9_.-]{1,128}$/.test(msg.hotspot_id))return;
+  const params=new URLSearchParams({exhibition_id:msg.exhibition_id,hotspot_id:msg.hotspot_id});
+  const target=journeyClientConfig.origin+'/journey/?'+params.toString();
+  let link=document.getElementById('gallery-journey-link');
+  if(!link){
+    link=document.createElement('a');link.id='gallery-journey-link';link.target='_blank';link.rel='noopener noreferrer';
+    link.style.cssText='position:fixed;z-index:90;left:50%;top:65px;transform:translateX(-50%);background:#b37b4f;color:white;padding:12px 22px;border-radius:12px;text-decoration:none;font-size:15px;font-family:system-ui;box-shadow:0 10px 30px #0008';
+    document.body.append(link);
+  }
+  link.textContent='查看作品 '+msg.hotspot_id+' · 挂进家里 ↗';link.href=target;
+  if(window.parent !== window)window.parent.postMessage({type:'molink.artwork.selected',exhibition_id:msg.exhibition_id,hotspot_id:msg.hotspot_id,artwork_id:msg.artwork_id},journeyClientConfig.origin);
 }
 
 async function startOffer() {
@@ -379,7 +396,6 @@ function stopControls() {
 }
 function startControlLoop() {
   stopControls();
-  if (window.journeySelectionActive) return;
   controlTimer = setInterval(sendControl, 50); // 20 Hz continuous state, no stale held controls
   sendControl();
   startPingLoop();
