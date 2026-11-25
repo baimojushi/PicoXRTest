@@ -20,7 +20,6 @@ namespace GalleryEditor
     [Serializable]
     public class SceneHotspotList { public SceneHotspotEntry[] hotspots; }
 
-    [MenuItem("Tools/前滩源 自动注册热点到业务端", false, 100)]
     public static class QianFanAutoRegisterHotspots
     {
         // 从 journey.json 读取 exhibitionId，避免硬编码
@@ -52,12 +51,7 @@ namespace GalleryEditor
             return ids.Distinct().OrderBy(id => id).ToList();
         }
 
-        [MenuItem("Tools/前滩源 自动注册热点到业务端", true)]
-        public static bool Validate()
-        {
-            return CollectHotspotIds().Count > 0;
-        }
-
+        [MenuItem("Tools/前滩源 自动注册热点到业务端", false, 100)]
         public static void Execute()
         {
             var ids = CollectHotspotIds();
@@ -94,6 +88,12 @@ namespace GalleryEditor
             string body = JsonUtility.ToJson(list);
 
             PutHotspotsAsync(apiBaseUrl, exhibitionId, sceneToken, body, ids.Count);
+        }
+
+        [MenuItem("Tools/前滩源 自动注册热点到业务端", true)]
+        public static bool Validate()
+        {
+            return CollectHotspotIds().Count > 0;
         }
 
         private static void PutHotspotsAsync(string apiBaseUrl, string exhibitionId, string token, string body, int count)

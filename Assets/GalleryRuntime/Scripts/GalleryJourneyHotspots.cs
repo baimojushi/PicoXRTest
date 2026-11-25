@@ -20,6 +20,9 @@ namespace GalleryRuntime
     /// Existing scene-authored hotspots take precedence and are never moved.</summary>
     public sealed class GalleryJourneyHotspots : MonoBehaviour
     {
+        [Tooltip("展览 profile；设置后本组件的 localHotspotsJsonPath 被 profile.localHotspotsJsonPath 覆盖")]
+        public ExhibitionProfile profile;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Bootstrap()
         {
@@ -39,7 +42,10 @@ namespace GalleryRuntime
         private IEnumerator Start()
         {
             yield return null; // Allow scene-authored hotspot/catalog initialization first.
-            string file = Path.Combine(Application.streamingAssetsPath, "Gallery/Config/journey_hotspots.json").Replace('\\', '/');
+            string rel = "Gallery/Config/journey_hotspots.json";
+            if (profile != null && !string.IsNullOrEmpty(profile.localHotspotsJsonPath))
+                rel = profile.localHotspotsJsonPath;
+            string file = Path.Combine(Application.streamingAssetsPath, rel).Replace('\\', '/');
             if (!file.Contains("://")) file = new Uri(file).AbsoluteUri;
             using (var request = UnityWebRequest.Get(file))
             {
